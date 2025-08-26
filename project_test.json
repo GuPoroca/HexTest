@@ -1,0 +1,28 @@
+{
+	"name": "Testes google",
+	"url": "www.google.com",
+	"auth": {
+		"type": "oauth2",
+		"token": "12312312312313"
+	},
+	"suites": [
+		{
+			"name": "Suite_01",
+			"api_endpoint": "/users",
+			"tests": [
+				{
+					"name": "TEST_01",
+					"request_body": "{oi}",
+					"expected_response_body": "{olá}",
+					"expected_response_status": 200
+				},
+				{
+					"name": "TEST_02",
+					"request_body": "{tchau}",
+					"expected_response_body": "{adeus}",
+					"expected_response_status": 200
+				}
+			]
+		}
+	]
+}
