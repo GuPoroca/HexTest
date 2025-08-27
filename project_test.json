@@ -12,13 +12,15 @@
 			"tests": [
 				{
 					"name": "TEST_01",
+					"method": "POST",
 					"request_body": "{oi}",
 					"expected_response_body": "{olá}",
 					"expected_response_status": 200
 				},
 				{
 					"name": "TEST_02",
-					"request_body": "{tchau}",
+					"method": "GET",
+					"request_body": "",
 					"expected_response_body": "{adeus}",
 					"expected_response_status": 200
 				}
