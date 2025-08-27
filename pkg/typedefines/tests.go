@@ -8,15 +8,19 @@ import (
 )
 
 type Test struct {
+	//Necessary {user input}
 	name           string
 	method         string
 	req_body       string
 	exp_res_body   string
 	exp_res_status string
-	content_type   string
-
+	//Necessary {defaulted values}
+	content_type string
+	//Response related
 	last_resp_body   string
 	last_resp_status string
+	//Extra sugar
+	comment string
 }
 
 func NewTest(name, method, req_body, exp_res_body, exp_res_status string) *Test {
