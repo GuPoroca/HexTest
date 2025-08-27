@@ -4,6 +4,7 @@
 
 </p>
 
+<p align="inline">
 <p align="center">
 
   <a href="https://golang.org/"><img src="https://img.shields.io/badge/Go-1.22+-00ADD8?logo=go&logoColor=white" alt="Go Version"></a>
@@ -12,6 +13,7 @@
 
   <img src="https://img.shields.io/badge/build-passing-brightgreen" alt="Build Status">
 
+</p>
 </p>
 
 ---
@@ -38,7 +40,7 @@ The primary goal is to help **QA engineers with little coding experience** quick
 
 ## 👤 About Me  
 
-I am a **Jr QA Engineer** who loves to code and explore new challenges and opportunities.  
+Hi, my name is Gustavo Poroca, I am a **Jr QA Engineer** who loves to code and explore new challenges and opportunities.  
 
 Always learning, always building 🚀  
 
@@ -79,4 +81,6 @@ Instructions for installation will go here.
   
 ---
 
-##🚀 How to Use [TODO]
+## 🚀 How to Use [TODO]
+
+
