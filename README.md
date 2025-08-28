@@ -4,8 +4,7 @@
 
 </p>
 
-<p align="inline">
-<p align="center">
+<div align="center"> <p align="inline">
 
   <a href="https://golang.org/"><img src="https://img.shields.io/badge/Go-1.22+-00ADD8?logo=go&logoColor=white" alt="Go Version"></a>
 
@@ -13,8 +12,7 @@
 
   <img src="https://img.shields.io/badge/build-passing-brightgreen" alt="Build Status">
 
-</p>
-</p>
+</p></div>
 
 ---
 
@@ -74,13 +72,10 @@ Always learning, always building 🚀
 
 ## 📦 Installation [TODO]  
 
-Instructions for installation will go here.  
-
-(Will include Go installation, `go get` commands, and setup steps.)
-
   
 ---
 
 ## 🚀 How to Use [TODO]
 
 
+---
