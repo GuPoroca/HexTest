@@ -1,23 +1,25 @@
 package mockclient
 
-import "github.com/GuPoroca/HexTest/pkg/typedefines"
+import "github.com/GuPoroca/HexTest/pkg/jsonOperations"
 
 func MakeAllRequests() {
-	server_url := "http://localhost:8080/base"
+	projeto := jsonOperations.ReadJSON()
 
-	teste_get := typedefines.NewTest("Teste_GET", "GET", "", "{aaa}", "200 OK")
-	teste_get.Execute(server_url, nil)
+	projeto.ExecuteProject()
 
-	teste_post := typedefines.NewTest("Teste_POST", "POST", `{"title":"post","body":"request","userId":1}`, "{aaa}", "201 Created")
-	teste_post.Execute(server_url, nil)
-
-	teste_put := typedefines.NewTest("Teste_PUT", "PUT", `{"title":"put","body":"request","userId":2}`, "{aaa}", "202 Accepted")
-	teste_put.Execute(server_url, nil)
-
-	teste_delete := typedefines.NewTest("Teste_DELETE", "DELETE", "", "{aaa}", "200 OK")
-	teste_delete.Execute(server_url, nil)
-
-	teste_options := typedefines.NewTest("Teste_OPTIONS", "OPTIONS", "", "{aaa}", "404 Not Found")
-	teste_options.Execute(server_url, nil)
+	// teste_get := typeDefines.NewTest("Teste_GET", "GET", "", "{aaa}", "200 OK", "/base")
+	// teste_get.Execute(server_url, auth)
+	//
+	// teste_post := typeDefines.NewTest("Teste_POST", "POST", `{"title":"post","body":"request","userId":1}`, "{aaa}", "201 Created", "/base")
+	// teste_post.Execute(server_url, auth)
+	//
+	// teste_put := typeDefines.NewTest("Teste_PUT", "PUT", `{"title":"put","body":"request","userId":2}`, "{aaa}", "202 Accepted", "/base")
+	// teste_put.Execute(server_url, auth)
+	//
+	// teste_delete := typeDefines.NewTest("Teste_DELETE", "DELETE", "", "{aaa}", "200 OK", "/base")
+	// teste_delete.Execute(server_url, auth)
+	//
+	// teste_options := typeDefines.NewTest("Teste_OPTIONS", "OPTIONS", "", "{aaa}", "404 Not Found", "/base")
+	// teste_options.Execute(server_url, auth)
 
 }

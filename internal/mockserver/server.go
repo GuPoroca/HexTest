@@ -16,27 +16,27 @@ func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(`{"message": "GET called"}`))
-		log.Printf("Recieved a GET request from: %s\n", r.RemoteAddr)
+		log.Printf("Received a GET request from: %s\n", r.RemoteAddr)
 	case "POST":
 		w.WriteHeader(http.StatusCreated)
 		w.Write(([]byte(`{"message": "POST called"}`)))
 		io.Copy(res_body, r.Body)
 		w.Write([]byte(res_body.String()))
-		log.Printf("Recieved a POST request from: %s\n", r.RemoteAddr)
+		log.Printf("Received a POST request from: %s\n", r.RemoteAddr)
 	case "PUT":
 		w.WriteHeader(http.StatusAccepted)
 		w.Write([]byte(`{"message": "PUT called"}`))
 		io.Copy(res_body, r.Body)
 		w.Write([]byte(res_body.String()))
-		log.Printf("Recieved a PUT request from: %s\n", r.RemoteAddr)
+		log.Printf("Received a PUT request from: %s\n", r.RemoteAddr)
 	case "DELETE":
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(`{"message": "DELETE called"}`))
-		log.Printf("Recieved a DELETE request from: %s\n", r.RemoteAddr)
+		log.Printf("Received a DELETE request from: %s\n", r.RemoteAddr)
 	default:
 		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte(`Bro, use real HTTP methods, who tf uses PATCH or OPTIONS, be forreal`))
-		log.Printf("Recieved a Delusional request from: %s\n", r.RemoteAddr)
+		log.Printf("Receved a Delusional request from: %s\n", r.RemoteAddr)
 	}
 }
 

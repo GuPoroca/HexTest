@@ -50,17 +50,17 @@ Always learning, always building 🚀
 
 ## 🛠️ Roadmap  
 
-- ✅ Start project  
+- ✅ Start project [DONE]
 
-- 🚧 Create each data structure for tests, suites and projects [WIP]  
+- ✅ Create each data structure for tests, suites and projects [DONE]  
 
 - ⏳ Create auth handler [TODO]  
 
 - ⏳ Create simple tests for the already written code [TODO]  
 
-- 🚧 Create mockServer and client to demonstration [WIP]  
+- 🚧 Create mockServer and client for demonstration [WIP]  
 
-- ⏳ Create JSON parser to project data [TODO]  
+- ✅ Create JSON parser to project data [DONE]  
 
 - ⏳ Create CLI tool to run some tests [TODO]  
 

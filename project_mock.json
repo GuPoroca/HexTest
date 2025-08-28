@@ -1,0 +1,75 @@
+{
+	"Name": "Testes mock",
+	"Url": "http://localhost:8080",
+	"Auth": {
+		"Auth_type": "oauth2",
+		"Token": "12312312312313"
+	},
+	"Suites": [
+		{
+			"Name": "Suite_base",
+			"Tests": [
+				{
+					"Name": "TEST_GET",
+					"Method": "GET",
+					"Request_body": "",
+					"Expected_response_body": "{\"message\": \"GET called\"}",
+					"Expected_response_status": "200 OK",
+					"Api_endpoint": "/base",
+					"Content_type": "application/json",
+					"Last_resp_body": "",
+					"Last_resp_status": "",
+					"Comment": "comment_1"
+				},
+				{
+					"Name": "TEST_POST",
+					"Method": "POST",
+					"Request_body": "{\"title\":\"post\",\"body\":\"request\",\"userId\":1}",
+					"Expected_response_body": "{\"message\": \"POST called\"}",
+					"Expected_response_status": "201 Created",
+					"Api_endpoint": "/base",
+					"Content_type": "application/json",
+					"Last_resp_body": "",
+					"Last_resp_status": "",
+					"Comment": "comment_2"
+				},
+				{
+					"Name": "TEST_PUT",
+					"Method": "PUT",
+					"Request_body": "{\"title\":\"put\",\"body\":\"request\",\"userId\":2}",
+					"Expected_response_body": "{\"message\": \"PUT called\"}",
+					"Expected_response_status": "202 Accepted",
+					"Api_endpoint": "/base",
+					"Content_type": "application/json",
+					"Last_resp_body": "",
+					"Last_resp_status": "",
+					"Comment": "comment_3"
+				},
+				{
+					"Name": "TEST_DELETE",
+					"Method": "DELETE",
+					"Request_body": "",
+					"Expected_response_body": "{\"message\": \"DELETE called\"}",
+					"Expected_response_status": "200 OK",
+					"Api_endpoint": "/base",
+					"Content_type": "application/json",
+					"Last_resp_body": "",
+					"Last_resp_status": "",
+					"Comment": "comment_4"
+				},
+				{
+					"Name": "TEST_OPTIONS",
+					"Method": "OPTIONS",
+					"Request_body": "",
+					"Expected_response_body": "Bro, use real HTTP methods, who tf uses PATCH or OPTIONS, be forreal",
+					"Expected_response_status": "404 Not Found",
+					"Api_endpoint": "/base",
+					"Content_type": "application/json",
+					"Last_resp_body": "",
+					"Last_resp_status": "",
+					"Comment": "comment_5"
+				}
+			]
+		}
+	]
+}
