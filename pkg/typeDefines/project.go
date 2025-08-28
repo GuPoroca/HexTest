@@ -5,15 +5,21 @@ import (
 )
 
 type Project struct {
-	Name   string  `json:"Name"`
-	Url    string  `json:"Url"`
-	Auth   Auth    `json:"Auth"`
-	Suites []Suite `json:"Suites"`
+	Name     string  `json:"Name"`
+	Url      string  `json:"Url"`
+	Auth     Auth    `json:"Auth"`
+	Parallel bool    `json:"Parallel"`
+	Suites   []Suite `json:"Suites"`
 }
 
 func (project *Project) ExecuteProject() {
 	fmt.Printf("Executing Project: %s\n", project.Name)
+
 	for i := range project.Suites {
-		project.Suites[i].ExecuteSuite(project.Url, project.Auth)
+		if project.Parallel {
+			go project.Suites[i].ExecuteSuite(project.Url, project.Auth)
+		} else {
+			project.Suites[i].ExecuteSuite(project.Url, project.Auth)
+		}
 	}
 }

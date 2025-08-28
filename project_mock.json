@@ -5,9 +5,11 @@
 		"Auth_type": "oauth2",
 		"Token": "12312312312313"
 	},
+	"Parallel": false,
 	"Suites": [
 		{
 			"Name": "Suite_base",
+			"Parallel": false,
 			"Tests": [
 				{
 					"Name": "TEST_GET",
@@ -16,9 +18,6 @@
 					"Expected_response_body": "{\"message\": \"GET called\"}",
 					"Expected_response_status": "200 OK",
 					"Api_endpoint": "/base",
-					"Content_type": "application/json",
-					"Last_resp_body": "",
-					"Last_resp_status": "",
 					"Comment": "comment_1"
 				},
 				{
@@ -28,9 +27,7 @@
 					"Expected_response_body": "{\"message\": \"POST called\"}",
 					"Expected_response_status": "201 Created",
 					"Api_endpoint": "/base",
-					"Content_type": "application/json",
-					"Last_resp_body": "",
-					"Last_resp_status": "",
+					"Content_type": "application/json; charset=UTF-8",
 					"Comment": "comment_2"
 				},
 				{
@@ -40,9 +37,7 @@
 					"Expected_response_body": "{\"message\": \"PUT called\"}",
 					"Expected_response_status": "202 Accepted",
 					"Api_endpoint": "/base",
-					"Content_type": "application/json",
-					"Last_resp_body": "",
-					"Last_resp_status": "",
+					"Content_type": "application/json; charset=UTF-8",
 					"Comment": "comment_3"
 				},
 				{
@@ -52,9 +47,7 @@
 					"Expected_response_body": "{\"message\": \"DELETE called\"}",
 					"Expected_response_status": "200 OK",
 					"Api_endpoint": "/base",
-					"Content_type": "application/json",
-					"Last_resp_body": "",
-					"Last_resp_status": "",
+					"Content_type": "application/json; charset=UTF-8",
 					"Comment": "comment_4"
 				},
 				{
@@ -64,9 +57,7 @@
 					"Expected_response_body": "Bro, use real HTTP methods, who tf uses PATCH or OPTIONS, be forreal",
 					"Expected_response_status": "404 Not Found",
 					"Api_endpoint": "/base",
-					"Content_type": "application/json",
-					"Last_resp_body": "",
-					"Last_resp_status": "",
+					"Content_type": "application/json; charset=UTF-8",
 					"Comment": "comment_5"
 				}
 			]

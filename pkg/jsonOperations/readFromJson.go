@@ -15,13 +15,35 @@ func ReadJSON() typeDefines.Project {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println("Successfully Opened users.json")
+	fmt.Printf("Successfully Opened %s\n", jsonFile.Name())
 
 	byteValue, _ := io.ReadAll(jsonFile)
-	var projeto typeDefines.Project
-	json.Unmarshal(byteValue, &projeto)
+	var project typeDefines.Project
+	json.Unmarshal(byteValue, &project)
 
 	defer jsonFile.Close()
+	SetDefaults(&project)
+	return project
+}
 
-	return projeto
+func PrettyPrint(project typeDefines.Project) {
+	data, err := json.MarshalIndent(project, "", "  ")
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	fmt.Println(string(data))
+}
+
+func SetDefaults(project *typeDefines.Project) {
+	//Project part
+	//Suites part
+
+	//Tests part
+	for _, suites := range project.Suites {
+		for i := range suites.Tests {
+			if suites.Tests[i].Content_type == "" {
+				suites.Tests[i].Content_type = "application/json; charset=UTF-8"
+			}
+		}
+	}
 }

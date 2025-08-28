@@ -4,7 +4,8 @@
 
 </p>
 
-<div align="center"> <p align="inline">
+<div align="center"> 
+  <p align="inline">
 
   <a href="https://golang.org/"><img src="https://img.shields.io/badge/Go-1.22+-00ADD8?logo=go&logoColor=white" alt="Go Version"></a>
 
@@ -12,7 +13,8 @@
 
   <img src="https://img.shields.io/badge/build-passing-brightgreen" alt="Build Status">
 
-</p></div>
+  </p>
+</div>
 
 ---
 
@@ -65,6 +67,8 @@ Always learning, always building 🚀
 - ⏳ Create visual interface with HTMX + Templ [TODO]  
 
 - ⏳ Upgrade documentation (make section 4 and 5) [TODO]  
+
+- ⏳ Import API Schemas from other sources [TODO]
 
 > This roadmap is just the beginning and will evolve as HexTest grows.  
 
