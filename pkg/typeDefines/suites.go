@@ -12,6 +12,8 @@ type Suite struct {
 
 func (suite *Suite) ExecuteSuite(url string, auth Auth) {
 	fmt.Printf("Executing Suite: %s\n", suite.Name)
+
+	fmt.Print("\n---------------------------------------\n")
 	for i := range suite.Tests {
 		if suite.Parallel {
 			go suite.Tests[i].Execute(url, auth)
