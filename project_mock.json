@@ -18,6 +18,9 @@
 					"Expected_response_body": "{\"message\": \"GET called\"}",
 					"Expected_response_status": "200 OK",
 					"Api_endpoint": "/base",
+					"Headers": {
+						"Content_type": "application/json; charset=UTF-8"
+					},
 					"Comment": "comment_1"
 				},
 				{
@@ -27,7 +30,9 @@
 					"Expected_response_body": "{\"message\": \"POST called\"}",
 					"Expected_response_status": "201 Created",
 					"Api_endpoint": "/base",
-					"Content_type": "application/json; charset=UTF-8",
+					"Headers": {
+						"Content_type": "application/json; charset=UTF-8"
+					},
 					"Comment": "comment_2"
 				},
 				{
@@ -37,7 +42,9 @@
 					"Expected_response_body": "{\"message\": \"PUT called\"}",
 					"Expected_response_status": "202 Accepted",
 					"Api_endpoint": "/base",
-					"Content_type": "application/json; charset=UTF-8",
+					"Headers": {
+						"Content_type": "application/json; charset=UTF-8"
+					},
 					"Comment": "comment_3"
 				},
 				{
@@ -47,7 +54,9 @@
 					"Expected_response_body": "{\"message\": \"DELETE called\"}",
 					"Expected_response_status": "200 OK",
 					"Api_endpoint": "/base",
-					"Content_type": "application/json; charset=UTF-8",
+					"Headers": {
+						"Content_type": "application/json; charset=UTF-8"
+					},
 					"Comment": "comment_4"
 				},
 				{
@@ -57,7 +66,9 @@
 					"Expected_response_body": "Bro, use real HTTP methods, who tf uses PATCH or OPTIONS, be forreal",
 					"Expected_response_status": "404 Not Found",
 					"Api_endpoint": "/base",
-					"Content_type": "application/json; charset=UTF-8",
+					"Headers": {
+						"Content_type": "application/json; charset=UTF-8"
+					},
 					"Comment": "comment_5"
 				}
 			]

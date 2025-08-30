@@ -19,8 +19,8 @@ type Test struct {
 	Expected_response_body   string `json:"Expected_response_body"`
 	Expected_response_status string `json:"Expected_response_status"`
 	Api_endpoint             string `json:"Api_endpoint"`
-	//Necessary {defaulted values}
-	Content_type string `json:"Content_type"`
+	//Custom Headers
+	Headers map[string]string `json:"Headers"`
 	//Response related
 	Last_response_body   string `json:"Last_response_body"`
 	Last_response_status string `json:"Last_response_status"`
@@ -67,7 +67,7 @@ func (test *Test) Execute(url string, auth Auth) error {
 	test.Last_response_status = response.Status
 	test.Last_response_body = string(out)
 
-	fmt.Printf("\nSize: %v Bytes\n", test.Last_response_size)
+	fmt.Printf("Size: %v Bytes\n", test.Last_response_size)
 	fmt.Printf("Time to execute: %vms\n", test.Time_to_respond)
 	fmt.Printf("Status: %s\n", test.Last_response_status)
 	fmt.Printf("Body: \n%s\n", test.Last_response_body)
@@ -87,5 +87,7 @@ func (test *Test) checkResponseSize(resp http.Response) {
 }
 
 func (test Test) AddAllHeaders(req http.Request) {
-	req.Header.Add("Content-type", test.Content_type)
+	for k := range test.Headers {
+		req.Header.Add(k, test.Headers[k])
+	}
 }

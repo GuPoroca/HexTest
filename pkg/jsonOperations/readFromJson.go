@@ -19,10 +19,10 @@ func ReadJSON() typeDefines.Project {
 
 	byteValue, _ := io.ReadAll(jsonFile)
 	var project typeDefines.Project
+
 	json.Unmarshal(byteValue, &project)
 
 	defer jsonFile.Close()
-	SetDefaults(&project)
 	return project
 }
 
@@ -32,18 +32,4 @@ func PrettyPrint(project typeDefines.Project) {
 		fmt.Println("error:", err)
 	}
 	fmt.Println(string(data))
-}
-
-func SetDefaults(project *typeDefines.Project) {
-	//Project part
-	//Suites part
-
-	//Tests part
-	for _, suites := range project.Suites {
-		for i := range suites.Tests {
-			if suites.Tests[i].Content_type == "" {
-				suites.Tests[i].Content_type = "application/json; charset=UTF-8"
-			}
-		}
-	}
 }
