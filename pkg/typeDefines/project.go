@@ -13,7 +13,7 @@ type Project struct {
 }
 
 func (project *Project) ExecuteProject() {
-	fmt.Printf("Executing Project: %s\n", project.Name)
+	fmt.Printf("\nExecuting Project: %s\n", project.Name)
 
 	for i := range project.Suites {
 		if project.Parallel {

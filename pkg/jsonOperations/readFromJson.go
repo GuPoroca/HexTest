@@ -8,9 +8,9 @@ import (
 	"os"
 )
 
-func ReadJSON() typeDefines.Project {
+func ReadJSON(path string) typeDefines.Project {
 
-	jsonFile, err := os.Open("../../project_mock.json")
+	jsonFile, err := os.Open(path)
 
 	if err != nil {
 		fmt.Println(err)
@@ -26,8 +26,8 @@ func ReadJSON() typeDefines.Project {
 	return project
 }
 
-func PrettyPrint(project typeDefines.Project) {
-	data, err := json.MarshalIndent(project, "", "  ")
+func PrettyPrint(any_struct any) {
+	data, err := json.MarshalIndent(any_struct, "", "  ")
 	if err != nil {
 		fmt.Println("error:", err)
 	}

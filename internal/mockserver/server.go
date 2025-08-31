@@ -24,14 +24,12 @@ func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusCreated)
 		w.Write(([]byte(`{"message": "POST called"}`)))
 		io.Copy(res_body, r.Body)
-		w.Write([]byte(res_body.String()))
 		log.Printf("Received a POST request from: %s\n", r.RemoteAddr)
 	case "PUT":
 		time.Sleep(100 * time.Millisecond)
 		w.WriteHeader(http.StatusAccepted)
 		w.Write([]byte(`{"message": "PUT called"}`))
 		io.Copy(res_body, r.Body)
-		w.Write([]byte(res_body.String()))
 		log.Printf("Received a PUT request from: %s\n", r.RemoteAddr)
 	case "DELETE":
 		time.Sleep(50 * time.Millisecond)
@@ -41,7 +39,7 @@ func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	default:
 		time.Sleep(15 * time.Millisecond)
 		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte(`Bro, use real HTTP methods, who tf uses PATCH or OPTIONS, be forreal`))
+		w.Write([]byte(`{"message": "Bro, use real HTTP methods, who tf uses PATCH or OPTIONS, be forreal"}`))
 		log.Printf("Receved a Delusional request from: %s\n", r.RemoteAddr)
 	}
 }

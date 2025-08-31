@@ -1,0 +1,71 @@
+package typeDefines
+
+import (
+	"fmt"
+)
+
+type Assert struct {
+	FieldToCheck       string
+	FieldResponseValue any
+	Checks             []Check
+	Result             bool
+}
+
+func (assert *Assert) MakeAssertions(fieldValue any) bool {
+	assert.FieldResponseValue = fieldValue
+	assert.Result = true
+	str_field_value := stringifyMyAny(fieldValue)
+	for i := range assert.Checks {
+		assert.RunSingleCheck(i, str_field_value)
+	}
+	return assert.Result
+}
+
+func (assert *Assert) RunSingleCheck(i int, str_field_value string) {
+	assert.Checks[i].Value = matchMyType(assert.FieldToCheck, assert.Checks[i].Value)
+	str_check_value := stringifyMyAny(assert.Checks[i].Value)
+	fmt.Printf("\t%s %s %s\n", str_field_value, assert.Checks[i].Operand, str_check_value)
+	if !assert.Checks[i].MakeCheck(assert.FieldResponseValue) {
+		fmt.Printf("\t FAILED\n")
+		assert.Result = false
+	} else {
+		fmt.Printf("\t PASSED\n")
+	}
+}
+
+func stringifyMyAny(myAny any) string {
+	var str string
+	if _, ok := myAny.(bool); ok {
+		str = fmt.Sprintf("%t", myAny)
+	} else if _, ok := myAny.(string); ok {
+		str = myAny.(string)
+	} else if _, ok := myAny.(int64); ok {
+		str = fmt.Sprintf("%d", myAny)
+	} else if _, ok := myAny.(float64); ok {
+		str = fmt.Sprintf("%f", myAny)
+	}
+	return str
+}
+
+func matchMyType(field string, current any) any {
+	switch field {
+	case "Response Body": //string
+		if _, ok := current.(string); !ok {
+			fmt.Printf("WARNING: %v should be of type string on the json, Test will probably fail\n", field)
+		}
+	case "Response Status": //string
+		if _, ok := current.(string); !ok {
+			fmt.Printf("WARNING: %v should be of type string on the json, Test will probably fail\n", field)
+		}
+	case "Response Time": //int64
+		if _, ok := current.(int64); !ok {
+			return int64(current.(float64))
+		}
+	case "Response Size": //int64
+		if _, ok := current.(int64); !ok {
+			return int64(current.(float64))
+		}
+
+	}
+	return current
+}

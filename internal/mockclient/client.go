@@ -5,7 +5,8 @@ import (
 )
 
 func MakeAllRequests() {
-	project := jsonOperations.ReadJSON()
+	path := "../../one_request.json"
+	project := jsonOperations.ReadJSON(path)
 
 	project.ExecuteProject()
 }

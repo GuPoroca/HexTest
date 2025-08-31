@@ -1,0 +1,47 @@
+{
+	"Name": "Single GET",
+	"Url": "http://localhost:8080",
+	"Auth": {
+		"Auth_type": "oauth2",
+		"Token": "12312312312313"
+	},
+	"Parallel": false,
+	"Suites": [
+		{
+			"Name": "Suite_of_one",
+			"Parallel": false,
+			"Tests": [
+				{
+					"Name": "TEST_GET",
+					"Method": "GET",
+					"Request_body": "",
+					"Asserts": [
+						{
+							"Response Body": {
+								"==": "{\"message\": \"GET called\"}",
+								"notNull": ""
+							},
+							"Response Status": {
+								"==": "200 OK",
+								"<=": 3
+							},
+							"Response Time": {
+								"<=": "1a00",
+								">=": "900"
+							},
+							"Response Size": {
+								"==": 133,
+								">=": "10"
+							}
+						}
+					],
+					"Api_endpoint": "/base",
+					"Request_Headers": {
+						"Content_type": "application/json; charset=UTF-8"
+					},
+					"Comment": "comment_1"
+				}
+			]
+		}
+	]
+}
