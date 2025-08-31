@@ -5,13 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/http/httputil"
 	"reflect"
 	"strconv"
 	"strings"
 	"time"
-	//"unsafe"
 )
 
 type Test struct {
@@ -43,8 +43,16 @@ func (test *Test) Execute(url string, auth IAuth) error {
 
 	request, err := http.NewRequest(test.Method, full_url, strings.NewReader(test.Request_body))
 	if err != nil {
-		fmt.Printf("An error ocurred while creating the request %v\n", err)
+		log.Fatalf("An error ocurred while creating the request %v\n", err)
 		return err
+	}
+	if auth != nil {
+		token, err := auth.Authenticate()
+		if err != nil {
+			log.Fatalf("An error ocurred during the token request %v\n", err)
+		}
+		request.Header.Add("Authorization", token)
+		fmt.Printf("\nAutenticado com sucesso!\n\n")
 	}
 
 	test.AddAllHeaders(*request)
@@ -53,7 +61,7 @@ func (test *Test) Execute(url string, auth IAuth) error {
 
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
-		fmt.Printf("An error ocurred while making the request %v\n", err)
+		log.Fatalf("An error ocurred while making the request %v\n", err)
 		return err
 	}
 
@@ -62,12 +70,14 @@ func (test *Test) Execute(url string, auth IAuth) error {
 	//puts response.Body in a []byte
 	out, err := io.ReadAll(response.Body)
 	if err != nil {
-		fmt.Printf("An error ocurred when reading the response %v\n", err)
+		log.Fatalf("An error ocurred when reading the response %v\n", err)
 		return err
 	}
+
 	test.Response_body_string = string(out)
+
 	if !json.Valid(out) {
-		fmt.Printf("Response contains a invalid json body")
+		log.Fatalf("Response contains a invalid json body")
 		return err
 	}
 
@@ -77,7 +87,7 @@ func (test *Test) Execute(url string, auth IAuth) error {
 	//maps the response.body to test.Response_body (map[string]any)
 	err = json.NewDecoder(response.Body).Decode(&test.Response_body)
 	if err != nil {
-		fmt.Printf("An error occurred when putting the response in the map %v\n", err)
+		log.Fatalf("An error occurred when putting the response in the map %v\n", err)
 		return err
 	}
 	//replaces the response.Body again
@@ -89,12 +99,13 @@ func (test *Test) Execute(url string, auth IAuth) error {
 	test.Response_status = response.Status
 
 	fmt.Printf("Response Body in json: %s\n", test.Response_body_string)
+	fmt.Printf("Status: %s\n", test.Response_status)
 	fmt.Printf("Size: %v Bytes\n", test.Response_size)
 	fmt.Printf("Time to execute: %vms\n", test.Time_to_respond)
 
-	fmt.Print("\n---------------------------------------\n")
-	fmt.Print("Running Assertions:\n")
+	fmt.Print("\nRunning Assertions:\n\n")
 	test.runAllAssertions()
+	fmt.Print("\n---------------------------------------\n")
 
 	return nil
 }
@@ -116,7 +127,7 @@ func (test *Test) runAllAssertions() bool {
 			fmt.Printf("Assertion field \"%s\" is invalid", test.Asserts[i].FieldToCheck)
 			continue
 		}
-		fmt.Printf("\tAsserting %s\n", test.Asserts[i].FieldToCheck)
+		fmt.Printf("\tAsserting %s\n\n", test.Asserts[i].FieldToCheck)
 		result = test.Asserts[i].MakeAssertions(value)
 	}
 	return result

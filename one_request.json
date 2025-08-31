@@ -1,10 +1,6 @@
 {
 	"Name": "Single GET",
 	"Url": "http://localhost:8080",
-	"Auth": {
-		"Auth_type": "oauth2",
-		"Token": "12312312312313"
-	},
 	"Parallel": false,
 	"Suites": [
 		{
@@ -18,9 +14,18 @@
 					"Asserts": [
 						{
 							"Response Body": {
-								"containsSubset": [
-									"{\"test\": \"deep\"}"
+								"containsKey -R": [
+									"test"
+								],
+								"containsKey": [
+									"field 1",
+									"field 2",
+									"field 3",
+									"test"
 								]
+							},
+							"Response Time": {
+								"<=": 1000
 							}
 						}
 					],

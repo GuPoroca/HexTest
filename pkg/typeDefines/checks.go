@@ -40,6 +40,7 @@ func (check *Check) MakeCheck(responseVal any) bool {
 		check.Result = assert.Contains(t, responseVal, check.Value)
 	case "containsKey -R":
 		_, check.Result = containsKeyRecursevely(responseVal, check.Value.(string))
+
 	}
 
 	return check.Result

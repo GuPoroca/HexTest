@@ -14,6 +14,9 @@ type Project struct {
 
 func (project *Project) ExecuteProject() {
 	fmt.Printf("\nExecuting Project: %s\n", project.Name)
+	fmt.Printf("\nCreating Authentication\n")
+
+	project.Auth = NewoAuth2("client_credentials")
 
 	for i := range project.Suites {
 		if project.Parallel {

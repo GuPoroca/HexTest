@@ -41,10 +41,10 @@ func (assert *Assert) SingleCheck(element any, i int, str_field_value string) {
 	str_check_value := stringifyMyAny(assert.Checks[i].Value)
 	fmt.Printf("\t%s %s %s\n", str_field_value, assert.Checks[i].Operand, str_check_value)
 	if !assert.Checks[i].MakeCheck(assert.FieldResponseValue) {
-		fmt.Printf("\t FAILED\n")
+		fmt.Printf("\t RESULT: FAILED\n\n")
 		assert.Result = false
 	} else {
-		fmt.Printf("\t PASSED\n")
+		fmt.Printf("\t RESULT: PASSED\n\n")
 	}
 }
 
