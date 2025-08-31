@@ -10,7 +10,7 @@ type Suite struct {
 	Parallel bool   `json:"Parallel"`
 }
 
-func (suite *Suite) ExecuteSuite(url string, auth Auth) {
+func (suite *Suite) ExecuteSuite(url string, auth IAuth) {
 	fmt.Printf("Executing Suite: %s\n", suite.Name)
 
 	fmt.Print("\n---------------------------------------\n")

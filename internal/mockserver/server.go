@@ -17,7 +17,9 @@ func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 		time.Sleep(500 * time.Millisecond)
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"message": "GET called"}`))
+		w.Write([]byte(`{"testing": "is true", "message": [{
+			"test": "deep"
+			}]}`))
 		log.Printf("Received a GET request from: %s\n", r.RemoteAddr)
 	case "POST":
 		time.Sleep(250 * time.Millisecond)

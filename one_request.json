@@ -18,20 +18,9 @@
 					"Asserts": [
 						{
 							"Response Body": {
-								"==": "{\"message\": \"GET called\"}",
-								"notNull": ""
-							},
-							"Response Status": {
-								"==": "200 OK",
-								"<=": 3
-							},
-							"Response Time": {
-								"<=": "1a00",
-								">=": "900"
-							},
-							"Response Size": {
-								"==": 133,
-								">=": "10"
+								"containsSubset": [
+									"{\"test\": \"deep\"}"
+								]
 							}
 						}
 					],

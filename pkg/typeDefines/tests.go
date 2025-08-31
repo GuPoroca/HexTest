@@ -35,7 +35,7 @@ type Test struct {
 	Comment string `json:"Comment"`
 }
 
-func (test *Test) Execute(url string, auth Auth) error {
+func (test *Test) Execute(url string, auth IAuth) error {
 	var err error
 	full_url := url + test.Api_endpoint
 
@@ -105,7 +105,7 @@ func (test *Test) runAllAssertions() bool {
 	for i := range test.Asserts {
 		switch test.Asserts[i].FieldToCheck {
 		case "Response Body":
-			value = test.Response_body_string
+			value = test.Response_body
 		case "Response Status":
 			value = test.Response_status
 		case "Response Time":

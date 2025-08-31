@@ -1,3 +1,4 @@
+ <!-- markdownlint-disable -->
 <p align="center">
 
   <img src="assets/banner.png" alt="HexTest Banner" width="100%">

@@ -5,9 +5,9 @@ import (
 )
 
 type Project struct {
-	Name     string  `json:"Name"`
-	Url      string  `json:"Url"`
-	Auth     Auth    `json:"Auth"`
+	Name     string `json:"Name"`
+	Url      string `json:"Url"`
+	Auth     IAuth
 	Parallel bool    `json:"Parallel"`
 	Suites   []Suite `json:"Suites"`
 }
