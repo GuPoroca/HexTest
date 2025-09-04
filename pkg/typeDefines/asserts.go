@@ -1,53 +1,26 @@
 package typeDefines
 
-import (
-	"encoding/json"
-	"fmt"
-	"log"
-)
+import ()
 
 type Assert struct {
-	Field              string  `json:"Field"`
-	Checks             []Check `json:"Checks"`
-	Results            []bool
-	FieldResponseValue any
-	Passed             int
+	Field                   string  `json:"Field"`
+	Checks                  []Check `json:"Checks"`
+	Results                 []bool
+	FieldResponseValue      any
+	Passed_Comparissons_num int
+	Total_Comparissons_num  int
 }
 
-func (assert *Assert) MakeAssertions(fieldValue any) bool {
+func (assert *Assert) MakeAssertions(fieldValue any) int {
 	assert.FieldResponseValue = fieldValue
-	str_field_value := stringifyMyAny(fieldValue)
-	result := 0
-	all_passed := true
 	for i := range assert.Checks {
-		assert.Results = append(assert.Results, assert.Checks[i].MakeAllChecks(str_field_value))
-		if assert.Results[i] {
-			result++
+		assert.Passed_Comparissons_num += assert.Checks[i].MakeAllChecks(fieldValue)
+		assert.Total_Comparissons_num += assert.Checks[i].Total_num
+		if (assert.Checks[i].Passed_num - len(assert.Checks[i].Expected)) == 0 {
+			assert.Results = append(assert.Results, true)
 		} else {
-			all_passed = false
+			assert.Results = append(assert.Results, false)
 		}
 	}
-	fmt.Printf("Checks passed: %v/%v", result, len(assert.Checks))
-	assert.Passed = result
-	return all_passed
-}
-
-func stringifyMyAny(myAny any) string {
-	var str string
-	if _, ok := myAny.(bool); ok {
-		str = fmt.Sprintf("%t", myAny)
-	} else if _, ok := myAny.(string); ok {
-		str = myAny.(string)
-	} else if _, ok := myAny.(int64); ok {
-		str = fmt.Sprintf("%d", myAny)
-	} else if _, ok := myAny.(float64); ok {
-		str = fmt.Sprintf("%f", myAny)
-	} else if _, ok := myAny.(map[string]any); ok {
-		str, err := json.Marshal(myAny) //solvethis
-		if err != nil {
-			log.Fatal(err)
-		}
-		return string(str)
-	}
-	return str
+	return assert.Passed_Comparissons_num
 }

@@ -27,8 +27,10 @@ type Test struct {
 	Time_to_respond      int64
 	Response_size        int64
 	//Assertion related
-	Asserts []Assert `json:"Asserts"`
-	Passed  []bool
+	Asserts                 []Assert `json:"Asserts"`
+	Passed                  []bool
+	Passed_Comparissons_num int
+	Total_Comparissons_num  int
 	//Extra sugar
 	Comment string `json:"Comment"`
 }
@@ -104,13 +106,12 @@ func (test *Test) Execute(url string, auth IAuth) error {
 	fmt.Print("\nRunning Assertions:\n\n")
 	test.runAllAssertions()
 	fmt.Print("\n---------------------------------------\n")
+	fmt.Printf("Total comparissons passed %d/%d", test.Passed_Comparissons_num, test.Total_Comparissons_num)
 
 	return nil
 }
 
-func (test *Test) runAllAssertions() bool {
-	result := 0.0
-	all_passed := true
+func (test *Test) runAllAssertions() int {
 	var value any
 	for i := range test.Asserts {
 		switch test.Asserts[i].Field {
@@ -123,20 +124,29 @@ func (test *Test) runAllAssertions() bool {
 		case "Response Size":
 			value = test.Response_size
 		default:
-			fmt.Printf("Assertion field \"%s\" is invalid", test.Asserts[i].Field)
-			continue
+			//special cases
+			if subFields := strings.Split(test.Asserts[i].Field, "."); subFields[0] == "Value of Body" {
+				if len(subFields) == 1 {
+					value = test.Response_body
+				} else {
+					value, _ = getSpecificVal(subFields[1:], test.Response_body)
+				}
+			} else {
+				fmt.Printf("Assertion field \"%s\" is invalid", test.Asserts[i].Field)
+				continue
+			}
 		}
 		fmt.Printf("\tAsserting %s\n\n", test.Asserts[i].Field)
 
-		test.Passed = append(test.Passed, test.Asserts[i].MakeAssertions(value))
-		if test.Passed[i] {
-			result++
+		test.Passed_Comparissons_num += test.Asserts[i].MakeAssertions(value)
+		test.Total_Comparissons_num += test.Asserts[i].Total_Comparissons_num
+		if (test.Asserts[i].Passed_Comparissons_num - len(test.Asserts[i].Checks)) == 0 {
+			test.Passed = append(test.Passed, true)
 		} else {
-			all_passed = false
+			test.Passed = append(test.Passed, false)
 		}
 	}
-	fmt.Printf("Assertions passed: %v/%v", result, len(test.Asserts))
-	return all_passed
+	return test.Passed_Comparissons_num
 }
 
 func (test *Test) checkResponseSize(resp http.Response) {
@@ -152,4 +162,34 @@ func (test Test) AddAllHeaders(req http.Request) {
 	for k := range test.Request_Headers {
 		req.Header.Add(k, test.Request_Headers[k])
 	}
+}
+
+func getSpecificVal(fa []string, m any) (any, bool) {
+	if len(fa) == 0 {
+		return nil, false
+	}
+	switch val := m.(type) {
+	case map[string]any:
+
+		if len(fa) == 1 {
+			return val[fa[0]], true
+		} else {
+			if val, ok := val[fa[0]]; ok {
+				return getSpecificVal(fa[1:], val)
+			} else {
+				return nil, false
+			}
+		}
+	case []any:
+		for i := range val {
+			if val[i].(map[string]any)[fa[0]] != nil {
+				if len(fa) == 1 {
+					return (val[i].(map[string]any)[fa[0]]), true
+				} else {
+					return getSpecificVal(fa[1:], val[i])
+				}
+			}
+		}
+	}
+	return nil, false
 }

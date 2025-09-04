@@ -33,6 +33,17 @@
 							]
 						},
 						{
+							"field": "Value of Body.message.test",
+							"Checks": [
+								{
+									"Operand": "==",
+									"Expected": [
+										"deep"
+									]
+								}
+							]
+						},
+						{
 							"Field": "Response Time",
 							"Checks": [
 								{
