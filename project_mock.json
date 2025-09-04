@@ -15,8 +15,39 @@
 					"Name": "TEST_GET",
 					"Method": "GET",
 					"Request_body": "",
-					"Expected_response_body": "{\"message\": \"GET called\"}",
-					"Expected_response_status": "200 OK",
+					"Asserts": [
+						{
+							"Field": "Response Body",
+							"Checks": [
+								{
+									"Operand": "containsKey -R",
+									"Expected": [
+										"test"
+									]
+								},
+								{
+									"Operand": "containsKey",
+									"Expected": [
+										"field 1",
+										"field 2",
+										"field 3",
+										"test"
+									]
+								}
+							]
+						},
+						{
+							"Field": "Response Time",
+							"Checks": [
+								{
+									"Operand": "<=",
+									"Expected": [
+										1000
+									]
+								}
+							]
+						}
+					],
 					"Api_endpoint": "/base",
 					"Request_Headers": {
 						"Content_type": "application/json; charset=UTF-8"

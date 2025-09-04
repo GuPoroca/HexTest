@@ -13,20 +13,35 @@
 					"Request_body": "",
 					"Asserts": [
 						{
-							"Response Body": {
-								"containsKey -R": [
-									"test"
-								],
-								"containsKey": [
-									"field 1",
-									"field 2",
-									"field 3",
-									"test"
-								]
-							},
-							"Response Time": {
-								"<=": 1000
-							}
+							"Field": "Response Body",
+							"Checks": [
+								{
+									"Operand": "containsKey -R",
+									"Expected": [
+										"test"
+									]
+								},
+								{
+									"Operand": "containsKey",
+									"Expected": [
+										"field 1",
+										"field 2",
+										"field 3",
+										"test"
+									]
+								}
+							]
+						},
+						{
+							"Field": "Response Time",
+							"Checks": [
+								{
+									"Operand": "<=",
+									"Expected": [
+										1000
+									]
+								}
+							]
 						}
 					],
 					"Api_endpoint": "/base",

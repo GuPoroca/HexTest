@@ -6,9 +6,9 @@ import (
 )
 
 type Check struct {
-	Operand string
-	Value   any
-	Result  bool
+	Operand  string   `json:"Operand"`
+	Expected []string `json:"Expected"`
+	Passed   []bool
 }
 
 type MockT struct {
@@ -20,30 +20,43 @@ func (m MockT) Errorf(format string, args ...any) {
 	m.errors = append(m.errors, errorMsg)
 }
 
-func (check *Check) MakeCheck(responseVal any) bool {
+func (check *Check) MakeAllChecks(responseVal any) bool {
+	result := 0
+	all_passed := true
+	for i := range check.Expected {
+		if check.MakeCheck(responseVal, i) {
+			result++
+		} else {
+			all_passed = false
+		}
+	}
+	fmt.Printf("Comparisons passed: %v/%v\n", result, len(check.Passed))
+	return all_passed
+}
+
+func (check *Check) MakeCheck(responseVal any, i int) bool {
 	t := &MockT{}
 
 	switch check.Operand {
 	case "==":
-		check.Result = assert.Equal(t, responseVal, check.Value)
+		check.Passed = append(check.Passed, assert.Equal(t, responseVal, check.Expected[i]))
 	case "!=":
-		check.Result = assert.NotEqual(t, responseVal, check.Value)
+		check.Passed = append(check.Passed, assert.NotEqual(t, responseVal, check.Expected[i]))
 	case ">=":
-		check.Result = assert.GreaterOrEqual(t, responseVal, check.Value)
+		check.Passed = append(check.Passed, assert.GreaterOrEqual(t, responseVal, check.Expected[i]))
 	case "<=":
-		check.Result = assert.LessOrEqual(t, responseVal, check.Value)
+		check.Passed = append(check.Passed, assert.LessOrEqual(t, responseVal, check.Expected[i]))
 	case "isNull":
-		check.Result = assert.Empty(t, responseVal)
+		check.Passed = append(check.Passed, assert.Empty(t, responseVal))
 	case "notNull":
-		check.Result = assert.NotEmpty(t, responseVal)
+		check.Passed = append(check.Passed, assert.NotEmpty(t, responseVal))
 	case "containsKey":
-		check.Result = assert.Contains(t, responseVal, check.Value)
+		check.Passed = append(check.Passed, assert.Contains(t, responseVal, check.Expected[i]))
 	case "containsKey -R":
-		_, check.Result = containsKeyRecursevely(responseVal, check.Value.(string))
-
+		_, result := containsKeyRecursevely(responseVal, check.Expected[i])
+		check.Passed = append(check.Passed, result)
 	}
-
-	return check.Result
+	return check.Passed[i]
 }
 
 func containsKeyRecursevely(responseVal any, targetVal string) (any, bool) {

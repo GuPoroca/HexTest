@@ -8,8 +8,6 @@ import (
 	"log"
 	"net/http"
 	"net/http/httputil"
-	"reflect"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -29,8 +27,8 @@ type Test struct {
 	Time_to_respond      int64
 	Response_size        int64
 	//Assertion related
-	Asserts []Assert `json:"-"`
-	Result  bool
+	Asserts []Assert `json:"Asserts"`
+	Passed  []bool
 	//Extra sugar
 	Comment string `json:"Comment"`
 }
@@ -111,10 +109,11 @@ func (test *Test) Execute(url string, auth IAuth) error {
 }
 
 func (test *Test) runAllAssertions() bool {
-	result := true
+	result := 0.0
+	all_passed := true
 	var value any
 	for i := range test.Asserts {
-		switch test.Asserts[i].FieldToCheck {
+		switch test.Asserts[i].Field {
 		case "Response Body":
 			value = test.Response_body
 		case "Response Status":
@@ -124,13 +123,20 @@ func (test *Test) runAllAssertions() bool {
 		case "Response Size":
 			value = test.Response_size
 		default:
-			fmt.Printf("Assertion field \"%s\" is invalid", test.Asserts[i].FieldToCheck)
+			fmt.Printf("Assertion field \"%s\" is invalid", test.Asserts[i].Field)
 			continue
 		}
-		fmt.Printf("\tAsserting %s\n\n", test.Asserts[i].FieldToCheck)
-		result = test.Asserts[i].MakeAssertions(value)
+		fmt.Printf("\tAsserting %s\n\n", test.Asserts[i].Field)
+
+		test.Passed = append(test.Passed, test.Asserts[i].MakeAssertions(value))
+		if test.Passed[i] {
+			result++
+		} else {
+			all_passed = false
+		}
 	}
-	return result
+	fmt.Printf("Assertions passed: %v/%v", result, len(test.Asserts))
+	return all_passed
 }
 
 func (test *Test) checkResponseSize(resp http.Response) {
@@ -145,72 +151,5 @@ func (test *Test) checkResponseSize(resp http.Response) {
 func (test Test) AddAllHeaders(req http.Request) {
 	for k := range test.Request_Headers {
 		req.Header.Add(k, test.Request_Headers[k])
-	}
-}
-
-// custom unmarshler
-func (t *Test) UnmarshalJSON(data []byte) error {
-
-	type TestAlias Test
-	aux := &struct {
-		Asserts []Assert `json:"-"`
-		*TestAlias
-	}{
-		TestAlias: (*TestAlias)(t),
-	}
-	if err := json.Unmarshal(data, &aux); err != nil {
-		return err
-	}
-
-	var rawAsserts struct {
-		Asserts []map[string]map[string]any `json:"Asserts"`
-	}
-	if err := json.Unmarshal(data, &rawAsserts); err != nil {
-		return err
-	}
-
-	var mappedAsserts []Assert
-	for _, assertBlock := range rawAsserts.Asserts {
-		for field, checksMap := range assertBlock {
-			newAssert := Assert{
-				FieldToCheck: field,
-				Checks:       []Check{},
-			}
-			for operand, value := range checksMap {
-				if NumberField(field) && reflect.TypeOf(value) == reflect.TypeOf("string") {
-					num_value, err := strconv.ParseFloat(value.(string), 64)
-					if err != nil {
-						fmt.Printf("\nWARNING: There was a problem in the number conversion on:")
-						fmt.Printf("\n Test: \"%s\"\n  Assertion: \"%s\"\n   Operand: \"%s\"\n    Value:\"%s\"", t.Name, newAssert.FieldToCheck, operand, value)
-						fmt.Printf("\nPlease fix the JSON. The numbers should not be between quotes")
-					}
-					newAssert.Checks = append(newAssert.Checks, Check{
-						Operand: operand,
-						Value:   num_value,
-					})
-					continue
-
-				}
-				newAssert.Checks = append(newAssert.Checks, Check{
-					Operand: operand,
-					Value:   value,
-				})
-			}
-			mappedAsserts = append(mappedAsserts, newAssert)
-		}
-	}
-	t.Asserts = mappedAsserts
-
-	return nil
-}
-
-func NumberField(field string) bool {
-	switch field {
-	case "Response Time":
-		return true
-	case "Response Size":
-		return true
-	default:
-		return false
 	}
 }
