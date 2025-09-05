@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/GuPoroca/HexTest/front"
 	"github.com/GuPoroca/HexTest/internal/mockclient"
 	"github.com/GuPoroca/HexTest/internal/mockserver"
 	"github.com/GuPoroca/HexTest/pkg/typeDefines"
@@ -27,6 +28,8 @@ func main() {
 		go mockserver.OpenServer()
 	case "client":
 		mockclient.MakeAllRequests()
+	case "edit":
+		front.Run_Front()
 	}
 
 	select {}
