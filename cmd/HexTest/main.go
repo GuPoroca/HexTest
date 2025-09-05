@@ -15,9 +15,9 @@ import (
 // or
 // fo run . client
 func main() {
-	auth := typeDefines.NewoAuth2("client_credentials")
 	switch os.Args[1] {
 	case "authtest":
+		auth := typeDefines.NewoAuth2("client_credentials")
 		str, err := auth.Authenticate()
 		if err != nil {
 			log.Fatalf("error in authentication, %v", err)
@@ -28,7 +28,7 @@ func main() {
 		go mockserver.OpenServer()
 	case "client":
 		mockclient.MakeAllRequests()
-	case "edit":
+	default:
 		front.Run_Front()
 	}
 
