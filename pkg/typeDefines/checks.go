@@ -162,6 +162,7 @@ func ContainsKeyRecursevely(responseVal any, targetVal string) (any, bool) {
 	return nil, false
 }
 
+<<<<<<< HEAD
 func StringifyMyAny(myAny any) string {
 	var str string
 	if _, ok := myAny.(bool); ok {
@@ -174,10 +175,26 @@ func StringifyMyAny(myAny any) string {
 		str = fmt.Sprintf("%f", myAny)
 	} else if _, ok := myAny.(map[string]any); ok {
 		str, err := json.Marshal(myAny) //solvethis
+=======
+func stringifyMyAny(myAny any) string {
+	switch v := myAny.(type) {
+	case bool:
+		return fmt.Sprintf("%t", v)
+	case string:
+		return v
+	case int64:
+		return fmt.Sprintf("%d", v)
+	case float64:
+		return fmt.Sprintf("%f", v)
+	case map[string]any:
+		b, err := json.Marshal(v)
+>>>>>>> main
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("error marshalling map: %v", err)
+			return ""
 		}
-		return string(str)
+		return string(b)
+	default:
+		return fmt.Sprintf("%v", myAny)
 	}
-	return str
 }
