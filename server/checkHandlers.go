@@ -1,9 +1,10 @@
 package server
 
 import (
+	"net/http"
+
 	"github.com/GuPoroca/HexTest/front/components"
 	"github.com/GuPoroca/HexTest/pkg/typeDefines"
-	"net/http"
 )
 
 /////////////////////////////////////////////////////
@@ -32,6 +33,12 @@ func HandleSaveCheck(w http.ResponseWriter, r *http.Request) {
 	old := r.FormValue("oldOperand")
 	operand := r.FormValue("Operand")
 
+	expected := r.Form["Expected"]
+	anySlice := make([]any, len(expected))
+	for i := range expected {
+		anySlice[i] = expected[i]
+	}
+
 	for si := range currentProject.Suites {
 		for ti := range currentProject.Suites[si].Tests {
 			for ai := range currentProject.Suites[si].Tests[ti].Asserts {
@@ -39,6 +46,7 @@ func HandleSaveCheck(w http.ResponseWriter, r *http.Request) {
 					c := &currentProject.Suites[si].Tests[ti].Asserts[ai].Checks[ci]
 					if c.Operand == old || c.Operand == operand {
 						c.Operand = operand
+						c.Expected = anySlice
 						components.EditCheckForm(*c).Render(r.Context(), w)
 						components.ProjectSidebarOOB(r.Context(), w, currentProject)
 
@@ -96,4 +104,11 @@ func HandleDeleteCheck(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	http.Error(w, "Check not found", http.StatusNotFound)
+}
+
+func HandleAddCheckExpected(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte(`
+        <input type="text" name="Expected" placeholder="Expected"
+               class="flex-1 p-2 bg-gray-800 rounded" />
+    `))
 }

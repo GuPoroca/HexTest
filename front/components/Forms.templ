@@ -46,6 +46,38 @@ templ EditProjectForm(project typeDefines.Project) {
 					class="w-full p-2 bg-gray-800 rounded"
 				/>
 			</label>
+			<label class="block">
+				<span class="text-sm">Request Headers</span>
+				<div id="headers-list" class="space-y-2">
+					for k, v := range project.Project_Headers {
+						<div class="flex space-x-2">
+							<input
+								type="text"
+								name="HeaderKeys"
+								value={ k }
+								placeholder="Key"
+								class="flex-1 p-2 bg-gray-800 rounded"
+							/>
+							<input
+								type="text"
+								name="HeaderValues"
+								value={ v }
+								placeholder="Value"
+								class="flex-1 p-2 bg-gray-800 rounded"
+							/>
+						</div>
+					}
+				</div>
+				<button
+					type="button"
+					class="mt-2 px-2 py-1 bg-gray-700 rounded hover:bg-gray-600"
+					hx-get="/add/test/header"
+					hx-target="#headers-list"
+					hx-swap="beforeend"
+				>
+					+ Add Header
+				</button>
+			</label>
 			<div class="flex justify-end pt-2">
 				<button
 					type="submit"
@@ -100,6 +132,15 @@ templ EditSuiteForm(suite typeDefines.Suite) {
 					class="w-full p-2 bg-gray-800 rounded"
 				/>
 			</label>
+			<label class="block">
+				<span class="text-sm">Comment</span>
+				<input
+					type="text"
+					name="Comment"
+					value={ suite.Comment }
+					class="w-full p-2 bg-gray-800 rounded"
+				/>
+			</label>
 			<div class="flex justify-end pt-2">
 				<button
 					type="submit"
@@ -113,11 +154,11 @@ templ EditSuiteForm(suite typeDefines.Suite) {
 }
 
 /////////////////////////////////////////////////////////
-// TEST FORM
+// TEST FORM (Improved UX)
 /////////////////////////////////////////////////////////
 templ EditTestForm(test typeDefines.Test) {
-	<div class="relative space-y-4">
-		<div class="flex justify-end space-x-2">
+	<div class="relative space-y-5">
+		<div class="flex justify-end gap-2">
 			<button
 				type="button"
 				class="px-3 py-1 bg-green-600 rounded hover:bg-green-500"
@@ -139,48 +180,47 @@ templ EditTestForm(test typeDefines.Test) {
 		</div>
 		<h2 class="text-2xl font-bold">Edit Test</h2>
 		<form
-			class="space-y-2"
+			class="space-y-5"
 			hx-post="/save/test"
 			hx-target="#main-content"
 			hx-swap="innerHTML"
 		>
-			<label class="block">
-				<span class="text-sm">Name</span>
-				<input type="hidden" name="oldName" value={ test.Name }/>
-				<input
-					type="text"
-					name="Name"
-					value={ test.Name }
-					class="w-full p-2 bg-gray-800 rounded"
-				/>
-			</label>
-			<label class="block">
-				<span class="text-sm">Method</span>
-				<input
-					type="text"
-					name="Method"
-					value={ test.Method }
-					class="w-full p-2 bg-gray-800 rounded"
-				/>
-			</label>
-			<label class="block">
-				<span class="text-sm">Request Body</span>
-				<input
-					type="text"
-					name="Request_body"
-					value={ test.Request_body }
-					class="w-full p-2 bg-gray-800 rounded"
-				/>
-			</label>
-			<label class="block">
-				<span class="text-sm">API Endpoint</span>
-				<input
-					type="text"
-					name="Api_endpoint"
-					value={ test.Api_endpoint }
-					class="w-full p-2 bg-gray-800 rounded"
-				/>
-			</label>
+			<input type="hidden" name="oldName" value={ test.Name }/>
+			<!-- Row 1: Name, Method, Endpoint -->
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+				<label class="block">
+					<span class="text-sm">Name</span>
+					<input
+						type="text"
+						name="Name"
+						value={ test.Name }
+						class="w-full p-2 bg-gray-800 rounded"
+					/>
+				</label>
+				<label class="block">
+					<span class="text-sm">Method</span>
+					{{ methods := []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"} }}
+					<select
+						name="Method"
+						class="w-full p-2 bg-gray-800 rounded"
+					>
+						for _, m := range methods {
+							<option value={ m } selected?={ m == test.Method }>{ m }</option>
+						}
+					</select>
+				</label>
+				<label class="block">
+					<span class="text-sm">API Endpoint</span>
+					<input
+						type="text"
+						name="Api_endpoint"
+						value={ test.Api_endpoint }
+						placeholder="/path"
+						class="w-full p-2 bg-gray-800 rounded"
+					/>
+				</label>
+			</div>
+			<!-- Row 2: Comment -->
 			<label class="block">
 				<span class="text-sm">Comment</span>
 				<input
@@ -189,6 +229,65 @@ templ EditTestForm(test typeDefines.Test) {
 					value={ test.Comment }
 					class="w-full p-2 bg-gray-800 rounded"
 				/>
+			</label>
+			<!-- Row 3: Request Body (multiline, monospace, beautify button) -->
+			<div class="block">
+				<div class="flex items-center justify-between">
+					<span class="text-sm">Request Body</span>
+					<button
+						type="button"
+						class="px-2 py-1 text-sm bg-gray-700 rounded hover:bg-gray-600"
+						onclick="formatJSONInTextarea('request-body')"
+						title="Pretty-print JSON"
+					>
+						Beautify JSON
+					</button>
+				</div>
+				<textarea
+					id="request-body"
+					name="Request_body"
+					rows="10"
+					spellcheck="false"
+					wrap="off"
+					class="w-full p-3 bg-gray-800 rounded font-mono resize-y leading-6"
+				>{ test.Request_body }</textarea>
+				<p class="text-xs text-gray-400 mt-1">
+					Tip: paste raw JSON and click <em>Beautify JSON</em>. Invalid JSON will show an alert.
+				</p>
+			</div>
+			<!-- Row 4: Headers -->
+			<label class="block">
+				<span class="text-sm">Request Headers</span>
+				<div id="headers-list" class="space-y-2 mt-1">
+					for k, v := range test.Request_Headers {
+						<div class="flex gap-2">
+							<input
+								type="text"
+								name="HeaderKeys"
+								value={ k }
+								placeholder="Key"
+								class="flex-1 p-2 bg-gray-800 rounded"
+							/>
+							<input
+								type="text"
+								name="HeaderValues"
+								value={ v }
+								placeholder="Value"
+								class="flex-1 p-2 bg-gray-800 rounded"
+							/>
+						</div>
+					}
+				</div>
+				<button
+					type="button"
+					class="mt-2 px-2 py-1 bg-gray-700 rounded hover:bg-gray-600"
+					hx-get="/add/test/header"
+					hx-target="#headers-list"
+					hx-swap="beforeend"
+				>
+					+ Add Header
+				</button>
+				<p class="text-xs text-gray-400 mt-1">Leave either field empty to remove that header on save.</p>
 			</label>
 			<div class="flex justify-end pt-2">
 				<button
@@ -200,6 +299,21 @@ templ EditTestForm(test typeDefines.Test) {
 			</div>
 		</form>
 	</div>
+	<!-- Tiny helper to pretty-print JSON in the Request Body textarea -->
+	<script>
+	function formatJSONInTextarea(id) {
+		try {
+			const el = document.getElementById(id);
+			if (!el) return;
+			const text = el.value.trim();
+			if (!text) return;
+			const obj = JSON.parse(text);
+			el.value = JSON.stringify(obj, null, 2);
+		} catch (e) {
+			alert("Invalid JSON: " + e.message);
+		}
+	}
+	</script>
 }
 
 /////////////////////////////////////////////////////////
@@ -288,6 +402,29 @@ templ EditCheckForm(check typeDefines.Check) {
 					value={ check.Operand }
 					class="w-full p-2 bg-gray-800 rounded"
 				/>
+			</label>
+			<label class="block">
+				<span class="text-sm">Expected Values</span>
+				<div id="expected-list" class="space-y-2">
+					for i := range check.Expected {
+						<input
+							type="text"
+							name="Expected"
+							value={ typeDefines.StringifyMyAny(check.Expected[i]) }
+							placeholder="Expected"
+							class="flex-1 p-2 bg-gray-800 rounded"
+						/>
+					}
+				</div>
+				<button
+					type="button"
+					class="mt-2 px-2 py-1 bg-gray-700 rounded hover:bg-gray-600"
+					hx-get="/add/check/expected"
+					hx-target="#expected-list"
+					hx-swap="beforeend"
+				>
+					+ Add Expected
+				</button>
 			</label>
 			<div class="flex justify-end pt-2">
 				<button

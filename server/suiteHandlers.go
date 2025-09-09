@@ -25,11 +25,13 @@ func HandleSaveSuite(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	old := r.FormValue("oldName")
 	new := r.FormValue("Name")
+	comment := r.FormValue("Comment")
 
 	var saved *typeDefines.Suite
 	for i := range currentProject.Suites {
 		if currentProject.Suites[i].Name == old || currentProject.Suites[i].Name == new {
 			currentProject.Suites[i].Name = new
+			currentProject.Suites[i].Comment = comment
 			saved = &currentProject.Suites[i]
 			break
 		}

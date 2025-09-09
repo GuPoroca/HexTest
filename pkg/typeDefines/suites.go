@@ -6,6 +6,7 @@ import (
 
 type Suite struct {
 	Name     string `json:"Name"`
+	Comment  string `json:"Comment"`
 	Tests    []Test `json:"Tests"`
 	Parallel bool   `json:"Parallel"`
 }
