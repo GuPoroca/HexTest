@@ -24,9 +24,9 @@
 								{
 									"Operand": "containsKey",
 									"Expected": [
-										"field 1",
-										"field 2",
-										"field 3",
+										"brazil",
+										"panama",
+										"azul",
 										"test"
 									]
 								}

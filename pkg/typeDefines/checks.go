@@ -162,7 +162,7 @@ func ContainsKeyRecursevely(responseVal any, targetVal string) (any, bool) {
 	return nil, false
 }
 
-func stringifyMyAny(myAny any) string {
+func StringifyMyAny(myAny any) string {
 	switch v := myAny.(type) {
 	case bool:
 		return fmt.Sprintf("%t", v)

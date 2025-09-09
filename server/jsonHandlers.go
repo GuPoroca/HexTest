@@ -109,7 +109,7 @@ func HandleJsonExport(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Content-Disposition", `attachment; filename="project.json"`)
 	enc := json.NewEncoder(w)
-	enc.SetIndent("", "  ")
+	enc.SetIndent("", "    ")
 	if err := enc.Encode(currentProject); err != nil {
 		log.Println("export error:", err)
 	}

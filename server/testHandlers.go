@@ -37,6 +37,18 @@ func HandleSaveTest(w http.ResponseWriter, r *http.Request) {
 				t.Request_body = r.FormValue("Request_body")
 				t.Api_endpoint = r.FormValue("Api_endpoint")
 				t.Comment = r.FormValue("Comment")
+
+				//Headers
+				keys := r.Form["HeaderKeys"]
+				values := r.Form["HeaderValues"]
+				headers := make(map[string]string)
+				for i := range keys {
+					if keys[i] != "" {
+						headers[keys[i]] = values[i]
+					}
+				}
+				t.Request_Headers = headers
+
 				components.EditTestForm(*t).Render(r.Context(), w)
 				components.ProjectSidebarOOB(r.Context(), w, currentProject)
 				return
@@ -78,4 +90,15 @@ func HandleDeleteTest(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	http.Error(w, "Test not found", http.StatusNotFound)
+}
+
+func HandleAddTestHeader(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte(`
+      <div class="flex gap-2">
+        <input type="text" name="HeaderKeys" placeholder="Key"
+               class="flex-1 p-2 bg-gray-800 rounded" />
+        <input type="text" name="HeaderValues" placeholder="Value"
+               class="flex-1 p-2 bg-gray-800 rounded" />
+      </div>
+    `))
 }

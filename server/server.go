@@ -41,12 +41,17 @@ func Run() {
 	http.HandleFunc("/add/test", HandleAddTest)
 	http.HandleFunc("/add/assert", HandleAddAssert)
 	http.HandleFunc("/add/check", HandleAddCheck)
+	http.HandleFunc("/add/check/expected", HandleAddCheckExpected)
 
 	// DELETE
 	http.HandleFunc("/delete/suite", HandleDeleteSuite)
 	http.HandleFunc("/delete/test", HandleDeleteTest)
 	http.HandleFunc("/delete/assert", HandleDeleteAssert)
 	http.HandleFunc("/delete/check", HandleDeleteCheck)
+
+	//Headers
+	http.HandleFunc("/add/project/header", HandleAddProjectHeader)
+	http.HandleFunc("/add/test/header", HandleAddTestHeader)
 
 	log.Println("Starting server on :6969")
 	if err := http.ListenAndServe(":6969", nil); err != nil {
