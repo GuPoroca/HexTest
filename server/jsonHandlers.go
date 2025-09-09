@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/GuPoroca/HexTest/front"
 	"github.com/GuPoroca/HexTest/front/components"
-	"github.com/GuPoroca/HexTest/pkg/jsonOperations"
 	"github.com/GuPoroca/HexTest/pkg/typeDefines"
 	"io"
 	"log"
@@ -16,10 +15,12 @@ import (
 /////////////////////////////////////////////////////
 
 func HandleIndex(w http.ResponseWriter, r *http.Request) {
-	projectData := jsonOperations.ReadJSON("./one_request.json")
-	currentProject = projectData
-
-	component := front.Layout(projectData, nil)
+	currentProject = typeDefines.Project{
+		Name:   "Untitled Project",
+		Url:    "",
+		Suites: []typeDefines.Suite{{Name: "New Suite"}},
+	}
+	component := front.Layout(currentProject, nil)
 	component.Render(r.Context(), w)
 }
 
@@ -44,7 +45,6 @@ func HandleNewProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Blank project with a blank Suite (per your spec)
 	currentProject = typeDefines.Project{
 		Name:   "Untitled Project",
 		Url:    "",
