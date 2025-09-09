@@ -1,0 +1,302 @@
+
+package components
+
+import "github.com/GuPoroca/HexTest/pkg/typeDefines"
+
+/////////////////////////////////////////////////////////
+// PROJECT FORM
+/////////////////////////////////////////////////////////
+templ EditProjectForm(project typeDefines.Project) {
+	<div class="relative space-y-4">
+		<!-- Top bar with Save/Add/Delete -->
+		<div class="flex justify-end space-x-2">
+			<button
+				type="button"
+				class="px-3 py-1 bg-green-600 rounded hover:bg-green-500"
+				hx-post={ "/add/suite?project=" + project.Name }
+				hx-target="#main-content"
+				hx-swap="innerHTML"
+			>
+				Add Suite
+			</button>
+		</div>
+		<h2 class="text-2xl font-bold">Edit Project</h2>
+		<form
+			class="space-y-2"
+			hx-post="/save/project"
+			hx-target="#main-content"
+			hx-swap="innerHTML"
+		>
+			<label class="block">
+				<span class="text-sm">Name</span>
+				<input type="hidden" name="oldName" value={ project.Name }/>
+				<input
+					type="text"
+					name="Name"
+					value={ project.Name }
+					class="w-full p-2 bg-gray-800 rounded"
+				/>
+			</label>
+			<label class="block">
+				<span class="text-sm">URL</span>
+				<input
+					type="text"
+					name="Url"
+					value={ project.Url }
+					class="w-full p-2 bg-gray-800 rounded"
+				/>
+			</label>
+			<div class="flex justify-end pt-2">
+				<button
+					type="submit"
+					class="px-3 py-1 bg-indigo-600 rounded hover:bg-indigo-500"
+				>
+					Save
+				</button>
+			</div>
+		</form>
+	</div>
+}
+
+/////////////////////////////////////////////////////////
+// SUITE FORM
+/////////////////////////////////////////////////////////
+templ EditSuiteForm(suite typeDefines.Suite) {
+	<div class="relative space-y-4">
+		<div class="flex justify-end space-x-2">
+			<button
+				type="button"
+				class="px-3 py-1 bg-green-600 rounded hover:bg-green-500"
+				hx-post={ "/add/test?suite=" + suite.Name }
+				hx-target="#main-content"
+				hx-swap="innerHTML"
+			>
+				Add Test
+			</button>
+			<button
+				type="button"
+				class="px-3 py-1 bg-red-600 rounded hover:bg-red-500"
+				hx-delete={ "/delete/suite?name=" + suite.Name }
+				hx-target="#main-content"
+				hx-swap="innerHTML"
+			>
+				Delete Suite
+			</button>
+		</div>
+		<h2 class="text-2xl font-bold">Edit Suite</h2>
+		<form
+			class="space-y-2"
+			hx-post="/save/suite"
+			hx-target="#main-content"
+			hx-swap="innerHTML"
+		>
+			<label class="block">
+				<span class="text-sm">Name</span>
+				<input type="hidden" name="oldName" value={ suite.Name }/>
+				<input
+					type="text"
+					name="Name"
+					value={ suite.Name }
+					class="w-full p-2 bg-gray-800 rounded"
+				/>
+			</label>
+			<div class="flex justify-end pt-2">
+				<button
+					type="submit"
+					class="px-3 py-1 bg-indigo-600 rounded hover:bg-indigo-500"
+				>
+					Save
+				</button>
+			</div>
+		</form>
+	</div>
+}
+
+/////////////////////////////////////////////////////////
+// TEST FORM
+/////////////////////////////////////////////////////////
+templ EditTestForm(test typeDefines.Test) {
+	<div class="relative space-y-4">
+		<div class="flex justify-end space-x-2">
+			<button
+				type="button"
+				class="px-3 py-1 bg-green-600 rounded hover:bg-green-500"
+				hx-post={ "/add/assert?test=" + test.Name }
+				hx-target="#main-content"
+				hx-swap="innerHTML"
+			>
+				Add Assert
+			</button>
+			<button
+				type="button"
+				class="px-3 py-1 bg-red-600 rounded hover:bg-red-500"
+				hx-delete={ "/delete/test?name=" + test.Name }
+				hx-target="#main-content"
+				hx-swap="innerHTML"
+			>
+				Delete Test
+			</button>
+		</div>
+		<h2 class="text-2xl font-bold">Edit Test</h2>
+		<form
+			class="space-y-2"
+			hx-post="/save/test"
+			hx-target="#main-content"
+			hx-swap="innerHTML"
+		>
+			<label class="block">
+				<span class="text-sm">Name</span>
+				<input type="hidden" name="oldName" value={ test.Name }/>
+				<input
+					type="text"
+					name="Name"
+					value={ test.Name }
+					class="w-full p-2 bg-gray-800 rounded"
+				/>
+			</label>
+			<label class="block">
+				<span class="text-sm">Method</span>
+				<input
+					type="text"
+					name="Method"
+					value={ test.Method }
+					class="w-full p-2 bg-gray-800 rounded"
+				/>
+			</label>
+			<label class="block">
+				<span class="text-sm">Request Body</span>
+				<input
+					type="text"
+					name="Request_body"
+					value={ test.Request_body }
+					class="w-full p-2 bg-gray-800 rounded"
+				/>
+			</label>
+			<label class="block">
+				<span class="text-sm">API Endpoint</span>
+				<input
+					type="text"
+					name="Api_endpoint"
+					value={ test.Api_endpoint }
+					class="w-full p-2 bg-gray-800 rounded"
+				/>
+			</label>
+			<label class="block">
+				<span class="text-sm">Comment</span>
+				<input
+					type="text"
+					name="Comment"
+					value={ test.Comment }
+					class="w-full p-2 bg-gray-800 rounded"
+				/>
+			</label>
+			<div class="flex justify-end pt-2">
+				<button
+					type="submit"
+					class="px-3 py-1 bg-indigo-600 rounded hover:bg-indigo-500"
+				>
+					Save
+				</button>
+			</div>
+		</form>
+	</div>
+}
+
+/////////////////////////////////////////////////////////
+// ASSERT FORM
+/////////////////////////////////////////////////////////
+templ EditAssertForm(assert typeDefines.Assert) {
+	<div class="relative space-y-4">
+		<div class="flex justify-end space-x-2">
+			<button
+				type="button"
+				class="px-3 py-1 bg-green-600 rounded hover:bg-green-500"
+				hx-post={ "/add/check?assert=" + assert.Field }
+				hx-target="#main-content"
+				hx-swap="innerHTML"
+			>
+				Add Check
+			</button>
+			<button
+				type="button"
+				class="px-3 py-1 bg-red-600 rounded hover:bg-red-500"
+				hx-delete={ "/delete/assert?field=" + assert.Field }
+				hx-target="#main-content"
+				hx-swap="innerHTML"
+			>
+				Delete Assert
+			</button>
+		</div>
+		<h2 class="text-2xl font-bold">Edit Assert</h2>
+		<form
+			class="space-y-2"
+			hx-post="/save/assert"
+			hx-target="#main-content"
+			hx-swap="innerHTML"
+		>
+			<label class="block">
+				<span class="text-sm">Field</span>
+				<input type="hidden" name="oldField" value={ assert.Field }/>
+				<input
+					type="text"
+					name="Field"
+					value={ assert.Field }
+					class="w-full p-2 bg-gray-800 rounded"
+				/>
+			</label>
+			<div class="flex justify-end pt-2">
+				<button
+					type="submit"
+					class="px-3 py-1 bg-indigo-600 rounded hover:bg-indigo-500"
+				>
+					Save
+				</button>
+			</div>
+		</form>
+	</div>
+}
+
+/////////////////////////////////////////////////////////
+// CHECK FORM
+/////////////////////////////////////////////////////////
+templ EditCheckForm(check typeDefines.Check) {
+	<div class="relative space-y-4">
+		<div class="flex justify-end space-x-2">
+			<button
+				type="button"
+				class="px-3 py-1 bg-red-600 rounded hover:bg-red-500"
+				hx-delete={ "/delete/check?operand=" + check.Operand }
+				hx-target="#main-content"
+				hx-swap="innerHTML"
+			>
+				Delete Check
+			</button>
+		</div>
+		<h2 class="text-2xl font-bold">Edit Check</h2>
+		<form
+			class="space-y-2"
+			hx-post="/save/check"
+			hx-target="#main-content"
+			hx-swap="innerHTML"
+		>
+			<label class="block">
+				<span class="text-sm">Operand</span>
+				<input type="hidden" name="oldOperand" value={ check.Operand }/>
+				<input
+					type="text"
+					name="Operand"
+					value={ check.Operand }
+					class="w-full p-2 bg-gray-800 rounded"
+				/>
+			</label>
+			<div class="flex justify-end pt-2">
+				<button
+					type="submit"
+					class="px-3 py-1 bg-indigo-600 rounded hover:bg-indigo-500"
+				>
+					Save
+				</button>
+			</div>
+		</form>
+	</div>
+}

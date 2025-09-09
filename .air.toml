@@ -1,0 +1,9 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+	bin = "./tmp/main"
+	cmd = "go build -o ./tmp/main ./"
+	delay = 200
+	exclude_dir = ["assets", "tmp"]
+	exclude_file = []

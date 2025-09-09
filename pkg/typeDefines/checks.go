@@ -41,7 +41,7 @@ func (check *Check) MakeCheck(responseVal any, i int) bool {
 	t := &MockT{}
 	expectedVal := check.Expected[i]
 	passed := false
-	fmt.Printf("\t%s %s %s\n", stringifyMyAny(responseVal), check.Operand, stringifyMyAny(expectedVal))
+	fmt.Printf("\t%s %s %s\n", StringifyMyAny(responseVal), check.Operand, StringifyMyAny(expectedVal))
 	switch check.Operand {
 	case "==":
 		passed = assert.True(t, reflect.DeepEqual(responseVal, expectedVal))
@@ -162,7 +162,7 @@ func ContainsKeyRecursevely(responseVal any, targetVal string) (any, bool) {
 	return nil, false
 }
 
-func stringifyMyAny(myAny any) string {
+func StringifyMyAny(myAny any) string {
 	var str string
 	if _, ok := myAny.(bool); ok {
 		str = fmt.Sprintf("%t", myAny)

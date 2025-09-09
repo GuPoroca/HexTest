@@ -1,0 +1,50 @@
+
+package front
+
+import "github.com/GuPoroca/HexTest/front/components"
+import "github.com/GuPoroca/HexTest/pkg/typeDefines"
+
+// Layout defines the main structure of our application.
+templ Layout(project typeDefines.Project, selectedComponent any) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<link rel="icon" type="image/svg+xml" href="/assets/logo.svg"/>
+			<title>HexTest</title>
+			<script src="https://cdn.tailwindcss.com"></script>
+			<!-- HTMX (defer so it's ready when DOM is painted) -->
+			<script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
+			<style>
+				/* Optional: smooth open/close for <details> content */
+				.content-wrapper {
+					display: grid;
+					grid-template-rows: 0fr; /* collapsed */
+					transition: grid-template-rows 0.3s ease-out;
+				}
+				details[open] .content-wrapper {
+					grid-template-rows: 1fr;
+				}
+				.content-wrapper > div { overflow: hidden; }
+			</style>
+		</head>
+		<body class="bg-gray-900 text-white">
+			<div class="h-screen flex flex-col">
+				<header>
+					@components.TopActionBar()
+				</header>
+				<div class="flex flex-1 overflow-hidden">
+					<!-- IMPORTANT: id=sidebar for OOB updates -->
+					<aside id="sidebar" class="w-1/4 bg-gray-800 p-4 overflow-y-auto">
+						@components.ProjectSidebar(project)
+					</aside>
+					<!-- IMPORTANT: id=main-content for HTMX targets -->
+					<main id="main-content" class="flex-1 overflow-y-auto p-6">
+						@components.MainContent(selectedComponent)
+					</main>
+				</div>
+			</div>
+		</body>
+	</html>
+}

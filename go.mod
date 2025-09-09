@@ -3,7 +3,6 @@ module github.com/GuPoroca/HexTest
 go 1.24.6
 
 require (
-	github.com/Oudwins/tailwind-merge-go v0.2.1
 	github.com/a-h/templ v0.3.943
 	github.com/joho/godotenv v1.5.1
 	github.com/stretchr/testify v1.11.1

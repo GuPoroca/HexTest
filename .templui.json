@@ -1,7 +1,0 @@
-{
-  "componentsDir": "front/components/",
-  "utilsDir": "front/utils/",
-  "moduleName": "github.com/GuPoroca/HexTest",
-  "jsDir": "assets/js",
-  "jsPublicPath": "/assets/js"
-}
