@@ -41,7 +41,7 @@ func (check *Check) MakeCheck(responseVal any, i int) bool {
 	t := &MockT{}
 	expectedVal := check.Expected[i]
 	passed := false
-	fmt.Printf("\t%s %s %s\n", stringifyMyAny(responseVal), check.Operand, stringifyMyAny(expectedVal))
+	fmt.Printf("\t%s %s %s\n", StringifyMyAny(responseVal), check.Operand, StringifyMyAny(expectedVal))
 	switch check.Operand {
 	case "==":
 		passed = assert.True(t, reflect.DeepEqual(responseVal, expectedVal))

@@ -1,0 +1,44 @@
+
+// components/TopActionBar.templ
+package components
+
+templ TopActionBar() {
+	<div class="h-14 border-b border-gray-700 bg-gray-800 flex items-center justify-between px-4">
+		<div class="flex items-center space-x-2">
+			<h1 class="text-lg font-semibold">HexTest</h1>
+			<span class="text-sm text-gray-400">v0.1-templ</span>
+		</div>
+		<div class="flex items-center space-x-2">
+			<!-- NEW: open confirm modal -->
+			<button
+				type="button"
+				class="px-3 py-1.5 text-sm bg-gray-700 rounded-md hover:bg-gray-600 flex items-center"
+				hx-get="/json/new/confirm"
+				hx-target="#modal-root"
+				hx-swap="innerHTML"
+			>
+				New
+			</button>
+			<!-- IMPORT: open import modal (with warning) -->
+			<button
+				type="button"
+				class="px-3 py-1.5 text-sm bg-gray-700 rounded-md hover:bg-gray-600 flex items-center"
+				hx-get="/json/import"
+				hx-target="#modal-root"
+				hx-swap="innerHTML"
+			>
+				Import
+			</button>
+			<!-- EXPORT: normal GET → browser download -->
+			<a
+				href="/json/export"
+				class="px-3 py-1.5 text-sm bg-gray-700 rounded-md hover:bg-gray-600 flex items-center"
+			>
+				Export
+			</a>
+			<button class="px-3 py-1.5 text-sm bg-green-600 hover:bg-green-700 text-white rounded-md flex items-center">
+				Run
+			</button>
+		</div>
+	</div>
+}

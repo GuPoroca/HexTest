@@ -1,0 +1,105 @@
+{
+  "Name": "Single GET",
+  "Url": "http://localhost:8080",
+  "Auth": null,
+  "Parallel": false,
+  "Suites": [
+    {
+      "Name": "Suite_of_one",
+      "Tests": [
+        {
+          "Name": "TEST_GET",
+          "Method": "GET",
+          "Request_body": "",
+          "Api_endpoint": "/base",
+          "Request_Headers": {
+            "Content_type": "application/json; charset=UTF-8"
+          },
+          "Response_body": null,
+          "Response_body_string": "",
+          "Response_status": "",
+          "Time_to_respond": 0,
+          "Response_size": 0,
+          "Asserts": [
+            {
+              "Field": "Response Body",
+              "Checks": [
+                {
+                  "Operand": "containsKey -R",
+                  "Expected": [
+                    "test"
+                  ],
+                  "Passed": null,
+                  "Passed_num": 0,
+                  "Total_num": 0
+                },
+                {
+                  "Operand": "containsKey",
+                  "Expected": [
+                    "field 1",
+                    "field 2",
+                    "field 3",
+                    "test"
+                  ],
+                  "Passed": null,
+                  "Passed_num": 0,
+                  "Total_num": 0
+                }
+              ],
+              "Results": null,
+              "FieldResponseValue": null,
+              "Passed_Comparissons_num": 0,
+              "Total_Comparissons_num": 0
+            },
+            {
+              "Field": "Value of Body.message.test",
+              "Checks": [
+                {
+                  "Operand": "==",
+                  "Expected": [
+                    "deep"
+                  ],
+                  "Passed": null,
+                  "Passed_num": 0,
+                  "Total_num": 0
+                }
+              ],
+              "Results": null,
+              "FieldResponseValue": null,
+              "Passed_Comparissons_num": 0,
+              "Total_Comparissons_num": 0
+            },
+            {
+              "Field": "Response Time",
+              "Checks": [
+                {
+                  "Operand": "\u003c=",
+                  "Expected": [
+                    1000
+                  ],
+                  "Passed": null,
+                  "Passed_num": 0,
+                  "Total_num": 0
+                }
+              ],
+              "Results": null,
+              "FieldResponseValue": null,
+              "Passed_Comparissons_num": 0,
+              "Total_Comparissons_num": 0
+            }
+          ],
+          "Passed": null,
+          "Passed_Comparissons_num": 0,
+          "Total_Comparissons_num": 0,
+          "Comment": "comment_1"
+        }
+      ],
+      "Parallel": false
+    },
+    {
+      "Name": "New Suite",
+      "Tests": null,
+      "Parallel": false
+    }
+  ]
+}

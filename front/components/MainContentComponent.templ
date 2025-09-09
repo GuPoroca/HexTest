@@ -1,0 +1,13 @@
+package components
+
+templ MainContent(selectedComponent any) {
+	if selectedComponent == nil {
+		<div class="flex items-center justify-center h-full text-gray-500">
+			<p>Select an item from the sidebar to view its details.</p>
+		</div>
+	} else {
+		<div>
+			<h1 class="text-2xl font-bold">Component Details</h1>
+		</div>
+	}
+}

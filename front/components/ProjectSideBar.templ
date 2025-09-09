@@ -1,0 +1,167 @@
+
+package components
+
+import (
+	"context"
+	"github.com/GuPoroca/HexTest/pkg/typeDefines"
+	"net/http"
+)
+
+// ProjectSidebar displays the project's structure in a tree view.
+templ ProjectSidebar(project typeDefines.Project) {
+	<ul>
+		<details class="group/project" open>
+			<summary class="flex items-center list-none pointer-events-none">
+				<!-- Arrow toggles -->
+				<svg
+					class="w-4 h-4 text-gray-400 transform group-open/project:rotate-90 transition-transform
+				            pointer-events-auto cursor-pointer"
+					fill="none"
+					stroke="currentColor"
+					viewBox="0 0 24 24"
+					xmlns="http://www.w3.org/2000/svg"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M9 5l7 7-7 7"
+					></path>
+				</svg>
+				<!-- Text edits -->
+				<li
+					class="mb-1 text-indigo-400 hover:text-indigo-200 cursor-pointer pointer-events-auto"
+					hx-get="/edit/project"
+					hx-target="#main-content"
+					hx-swap="innerHTML"
+				>
+					<span class="font-mono font-bold text-3xl">P </span>
+					<span class="font-bold text-2xl">{ project.Name }</span>
+				</li>
+			</summary>
+			<ul class="pl-4 mt-1">
+				for _, suite := range project.Suites {
+					<details class="group/suite" open>
+						<summary class="flex items-center list-none pointer-events-none">
+							<svg
+								class="w-4 h-4 text-gray-400 transform group-open/suite:rotate-90 transition-transform
+							            pointer-events-auto cursor-pointer"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M9 5l7 7-7 7"
+								></path>
+							</svg>
+							<li
+								class="mb-1 text-indigo-400 hover:text-indigo-200 cursor-pointer pointer-events-auto"
+								hx-get={ "/edit/suite?name=" + suite.Name }
+								hx-target="#main-content"
+								hx-swap="innerHTML"
+							>
+								<span class="font-mono font-semibold text-2xl">S </span>
+								<span class="font-semibold text-xl">{ suite.Name }</span>
+							</li>
+						</summary>
+						<ul class="pl-4 mt-1">
+							for _, test := range suite.Tests {
+								<details class="group/test" open>
+									<summary class="flex items-center list-none pointer-events-none">
+										<svg
+											class="w-4 h-4 text-gray-400 transform group-open/test:rotate-90 transition-transform
+										            pointer-events-auto cursor-pointer"
+											fill="none"
+											stroke="currentColor"
+											viewBox="0 0 24 24"
+											xmlns="http://www.w3.org/2000/svg"
+										>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M9 5l7 7-7 7"
+											></path>
+										</svg>
+										<li
+											class="mb-1 text-indigo-400 hover:text-indigo-200 cursor-pointer pointer-events-auto"
+											hx-get={ "/edit/test?name=" + test.Name }
+											hx-target="#main-content"
+											hx-swap="innerHTML"
+										>
+											<span class="font-mono font-medium text-xl">T </span>
+											<span class="font-medium text-lg">{ test.Name }</span>
+										</li>
+									</summary>
+									<ul class="pl-4 mt-1">
+										for _, assert := range test.Asserts {
+											<details class="group/assert" open>
+												<summary class="flex items-center list-none pointer-events-none">
+													<svg
+														class="w-4 h-4 text-gray-400 transform group-open/assert:rotate-90 transition-transform
+													            pointer-events-auto cursor-pointer"
+														fill="none"
+														stroke="currentColor"
+														viewBox="0 0 24 24"
+														xmlns="http://www.w3.org/2000/svg"
+													>
+														<path
+															stroke-linecap="round"
+															stroke-linejoin="round"
+															stroke-width="2"
+															d="M9 5l7 7-7 7"
+														></path>
+													</svg>
+													<li
+														class="mb-1 text-indigo-400 hover:text-indigo-200 cursor-pointer pointer-events-auto"
+														hx-get={ "/edit/assert?field=" + assert.Field }
+														hx-target="#main-content"
+														hx-swap="innerHTML"
+													>
+														<span class="font-mono font-normal text-lg">A </span>
+														<span class="font-normal text-base">{ assert.Field }</span>
+													</li>
+												</summary>
+												<ul class="pl-4 mt-1">
+													for _, check := range assert.Checks {
+														<li
+															class="mb-1 text-indigo-400 hover:text-indigo-200 cursor-pointer"
+															hx-get={ "/edit/check?operand=" + check.Operand }
+															hx-target="#main-content"
+															hx-swap="innerHTML"
+														>
+															<span class="font-mono font-light text-lg">C </span>
+															<span class="font-light text-base">{ check.Operand }</span>
+														</li>
+													}
+												</ul>
+											</details>
+										}
+									</ul>
+								</details>
+							}
+						</ul>
+					</details>
+				}
+			</ul>
+		</details>
+	</ul>
+}
+
+func ProjectSidebarOOB(ctx context.Context, w http.ResponseWriter, project typeDefines.Project) error {
+	// hx-swap-oob="true" tells HTMX to replace the #sidebar div
+	_, err := w.Write([]byte(`<div id="sidebar" class="w-1/4 bg-gray-800 p-4 overflow-y-auto" hx-swap-oob="true">`))
+	if err != nil {
+		return err
+	}
+	err = ProjectSidebar(project).Render(ctx, w)
+	if err != nil {
+		return err
+	}
+	_, err = w.Write([]byte(`</div>`))
+	return err
+}
