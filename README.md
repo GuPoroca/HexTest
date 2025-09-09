@@ -65,7 +65,7 @@ Always learning, always building 🚀
 
 - ⏳ Create CLI tool to run some tests [TODO]  
 
-- ⏳ Create visual interface with HTMX + Templ [TODO]  
+- 🚧 Create visual interface with HTMX + Templ [WIP]  
 
 - ⏳ Upgrade documentation (make section 4 and 5) [TODO]  
 

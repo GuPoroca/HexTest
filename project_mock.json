@@ -1,108 +1,136 @@
 {
-	"Name": "Testes mock",
-	"Url": "http://localhost:8080",
-	"Auth": {
-		"Auth_type": "oauth2",
-		"Token": "12312312312313"
-	},
-	"Parallel": false,
-	"Suites": [
-		{
-			"Name": "Suite_base",
-			"Parallel": false,
-			"Tests": [
-				{
-					"Name": "TEST_GET",
-					"Method": "GET",
-					"Request_body": "",
-					"Asserts": [
-						{
-							"Field": "Response Body",
-							"Checks": [
-								{
-									"Operand": "containsKey -R",
-									"Expected": [
-										"test"
-									]
-								},
-								{
-									"Operand": "containsKey",
-									"Expected": [
-										"field 1",
-										"field 2",
-										"field 3",
-										"test"
-									]
-								}
-							]
-						},
-						{
-							"Field": "Response Time",
-							"Checks": [
-								{
-									"Operand": "<=",
-									"Expected": [
-										1000
-									]
-								}
-							]
-						}
-					],
-					"Api_endpoint": "/base",
-					"Request_Headers": {
-						"Content_type": "application/json; charset=UTF-8"
-					},
-					"Comment": "comment_1"
-				},
-				{
-					"Name": "TEST_POST",
-					"Method": "POST",
-					"Request_body": "{\"title\":\"post\",\"body\":\"request\",\"userId\":1}",
-					"Expected_response_body": "{\"message\": \"POST called\"}",
-					"Expected_response_status": "201 Created",
-					"Api_endpoint": "/base",
-					"Request_Headers": {
-						"Content_type": "application/json; charset=UTF-8"
-					},
-					"Comment": "comment_2"
-				},
-				{
-					"Name": "TEST_PUT",
-					"Method": "PUT",
-					"Request_body": "{\"title\":\"put\",\"body\":\"request\",\"userId\":2}",
-					"Expected_response_body": "{\"message\": \"PUT called\"}",
-					"Expected_response_status": "202 Accepted",
-					"Api_endpoint": "/base",
-					"Request_Headers": {
-						"Content_type": "application/json; charset=UTF-8"
-					},
-					"Comment": "comment_3"
-				},
-				{
-					"Name": "TEST_DELETE",
-					"Method": "DELETE",
-					"Request_body": "",
-					"Expected_response_body": "{\"message\": \"DELETE called\"}",
-					"Expected_response_status": "200 OK",
-					"Api_endpoint": "/base",
-					"Request_Headers": {
-						"Content_type": "application/json; charset=UTF-8"
-					},
-					"Comment": "comment_4"
-				},
-				{
-					"Name": "TEST_OPTIONS",
-					"Method": "OPTIONS",
-					"Request_body": "",
-					"Expected_response_body": "Bro, use real HTTP methods, who tf uses PATCH or OPTIONS, be forreal",
-					"Expected_response_status": "404 Not Found",
-					"Api_endpoint": "/base",
-					"Request_Headers": {
-						"Content_type": "application/json; charset=UTF-8"
-					},
-					"Comment": "comment_5"
-				}
-			]
-		}
-	]
+    "Name": "Single GET",
+    "Url": "http://localhost:8080",
+    "Auth": null,
+    "Parallel": false,
+    "Project_Headers": null,
+    "Suites": [
+        {
+            "Name": "Suite_of_one",
+            "Comment": "",
+            "Tests": [
+                {
+                    "Name": "TEST_GET",
+                    "Method": "GET",
+                    "Request_body": "",
+                    "Api_endpoint": "/base",
+                    "Request_Headers": {
+                        "Content_type": "application/json; charset=UTF-8"
+                    },
+                    "Response_body": null,
+                    "Response_body_string": "",
+                    "Response_status": "",
+                    "Time_to_respond": 0,
+                    "Response_size": 0,
+                    "Asserts": [
+                        {
+                            "Field": "Response Body",
+                            "Checks": [
+                                {
+                                    "Operand": "containsKey -R",
+                                    "Expected": [
+                                        "test"
+                                    ],
+                                    "Passed": null,
+                                    "Passed_num": 0,
+                                    "Total_num": 0
+                                },
+                                {
+                                    "Operand": "containsKey",
+                                    "Expected": [
+                                        "brazil",
+                                        "panama",
+                                        "azul",
+                                        "test"
+                                    ],
+                                    "Passed": null,
+                                    "Passed_num": 0,
+                                    "Total_num": 0
+                                }
+                            ],
+                            "Results": null,
+                            "FieldResponseValue": null,
+                            "Passed_Comparissons_num": 0,
+                            "Total_Comparissons_num": 0
+                        },
+                        {
+                            "Field": "Value of Body.message.test",
+                            "Checks": [
+                                {
+                                    "Operand": "==",
+                                    "Expected": [
+                                        "deep"
+                                    ],
+                                    "Passed": null,
+                                    "Passed_num": 0,
+                                    "Total_num": 0
+                                }
+                            ],
+                            "Results": null,
+                            "FieldResponseValue": null,
+                            "Passed_Comparissons_num": 0,
+                            "Total_Comparissons_num": 0
+                        },
+                        {
+                            "Field": "Response Time",
+                            "Checks": [
+                                {
+                                    "Operand": "\u003c=",
+                                    "Expected": [
+                                        1000
+                                    ],
+                                    "Passed": null,
+                                    "Passed_num": 0,
+                                    "Total_num": 0
+                                }
+                            ],
+                            "Results": null,
+                            "FieldResponseValue": null,
+                            "Passed_Comparissons_num": 0,
+                            "Total_Comparissons_num": 0
+                        }
+                    ],
+                    "Passed": null,
+                    "Passed_Comparissons_num": 0,
+                    "Total_Comparissons_num": 0,
+                    "Comment": "comment_1"
+                },
+                {
+                    "Name": "Test POST",
+                    "Method": "POST",
+                    "Request_body": "{}",
+                    "Api_endpoint": "/base",
+                    "Request_Headers": {},
+                    "Response_body": null,
+                    "Response_body_string": "",
+                    "Response_status": "",
+                    "Time_to_respond": 0,
+                    "Response_size": 0,
+                    "Asserts": null,
+                    "Passed": null,
+                    "Passed_Comparissons_num": 0,
+                    "Total_Comparissons_num": 0,
+                    "Comment": ""
+                },
+                {
+                    "Name": "Test DELETE",
+                    "Method": "DELETE",
+                    "Request_body": "",
+                    "Api_endpoint": "/base",
+                    "Request_Headers": {},
+                    "Response_body": null,
+                    "Response_body_string": "",
+                    "Response_status": "",
+                    "Time_to_respond": 0,
+                    "Response_size": 0,
+                    "Asserts": null,
+                    "Passed": null,
+                    "Passed_Comparissons_num": 0,
+                    "Total_Comparissons_num": 0,
+                    "Comment": ""
+                }
+            ],
+            "Parallel": false
+        }
+    ]
 }
