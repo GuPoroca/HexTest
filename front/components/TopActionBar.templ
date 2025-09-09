@@ -1,3 +1,5 @@
+
+// components/TopActionBar.templ
 package components
 
 templ TopActionBar() {
@@ -7,15 +9,33 @@ templ TopActionBar() {
 			<span class="text-sm text-gray-400">v0.1-templ</span>
 		</div>
 		<div class="flex items-center space-x-2">
-			<button class="px-3 py-1.5 text-sm bg-gray-700 rounded-md hover:bg-gray-600 flex items-center">
+			<!-- NEW: open confirm modal -->
+			<button
+				type="button"
+				class="px-3 py-1.5 text-sm bg-gray-700 rounded-md hover:bg-gray-600 flex items-center"
+				hx-get="/json/new/confirm"
+				hx-target="#modal-root"
+				hx-swap="innerHTML"
+			>
+				New
+			</button>
+			<!-- IMPORT: open import modal (with warning) -->
+			<button
+				type="button"
+				class="px-3 py-1.5 text-sm bg-gray-700 rounded-md hover:bg-gray-600 flex items-center"
+				hx-get="/json/import"
+				hx-target="#modal-root"
+				hx-swap="innerHTML"
+			>
 				Import
 			</button>
-			<button class="px-3 py-1.5 text-sm bg-gray-700 rounded-md hover:bg-gray-600 flex items-center">
-				Edit
-			</button>
-			<button class="px-3 py-1.5 text-sm bg-gray-700 rounded-md hover:bg-gray-600 flex items-center">
-				Save
-			</button>
+			<!-- EXPORT: normal GET → browser download -->
+			<a
+				href="/json/export"
+				class="px-3 py-1.5 text-sm bg-gray-700 rounded-md hover:bg-gray-600 flex items-center"
+			>
+				Export
+			</a>
 			<button class="px-3 py-1.5 text-sm bg-green-600 hover:bg-green-700 text-white rounded-md flex items-center">
 				Run
 			</button>

@@ -16,6 +16,12 @@ func Run() {
 	// This handler will render the main page of our application.
 	http.HandleFunc("/", HandleIndex)
 
+	http.HandleFunc("/json/new/confirm", HandleNewProjectConfirm)
+	http.HandleFunc("/json/new", HandleNewProject)
+	http.HandleFunc("/json/import", HandleJsonImport) // GET (modal) + POST (upload)
+	http.HandleFunc("/json/export", HandleJsonExport)
+	http.HandleFunc("/modal/close", HandleModalClose)
+
 	// EDIT
 	http.HandleFunc("/edit/project", HandleEditProject)
 	http.HandleFunc("/edit/suite", HandleEditSuite)
@@ -41,8 +47,8 @@ func Run() {
 	http.HandleFunc("/delete/test", HandleDeleteTest)
 	http.HandleFunc("/delete/assert", HandleDeleteAssert)
 	http.HandleFunc("/delete/check", HandleDeleteCheck)
+
 	log.Println("Starting server on :6969")
-	// Start the web server on port 8080.
 	if err := http.ListenAndServe(":6969", nil); err != nil {
 		log.Fatalf("could not start server: %v\n", err)
 	}
