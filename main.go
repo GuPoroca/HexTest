@@ -2,12 +2,10 @@ package main
 
 import (
 	"fmt"
-	"os"
-
-	"github.com/GuPoroca/HexTest/internal/mockclient"
-	"github.com/GuPoroca/HexTest/internal/mockserver"
+	"github.com/GuPoroca/HexTest/internal/exampleserver"
 	"github.com/GuPoroca/HexTest/pkg/jsonOperations"
 	"github.com/GuPoroca/HexTest/server"
+	"os"
 )
 
 // go run . server
@@ -24,10 +22,8 @@ func main() {
 			projeto := jsonOperations.ReadJSON(path)
 			projeto.ExecuteProject()
 		}
-	case "server":
-		mockserver.OpenServer()
-	case "client":
-		mockclient.MakeAllRequests()
+	case "example_server":
+		exampleserver.RunExample()
 	case "front":
 		//frontend
 		server.Run()

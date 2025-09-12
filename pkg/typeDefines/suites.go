@@ -5,10 +5,12 @@ import (
 )
 
 type Suite struct {
-	Name     string `json:"Name"`
-	Comment  string `json:"Comment"`
-	Tests    []Test `json:"Tests"`
-	Parallel bool   `json:"Parallel"`
+	Name                    string `json:"Name"`
+	Comment                 string `json:"Comment"`
+	Tests                   []Test `json:"Tests"`
+	Parallel                bool   `json:"Parallel"`
+	Passed_Comparissons_num int
+	Total_Comparissons_num  int
 }
 
 func (suite *Suite) ExecuteSuite(url string, auth IAuth) {
@@ -21,5 +23,11 @@ func (suite *Suite) ExecuteSuite(url string, auth IAuth) {
 		} else {
 			suite.Tests[i].Execute(url, auth)
 		}
+		suite.Passed_Comparissons_num += suite.Tests[i].Passed_Comparissons_num
+		suite.Total_Comparissons_num += suite.Tests[i].Total_Comparissons_num
+
 	}
+	fmt.Print("\n---------------------------------------\n")
+	fmt.Printf("Total comparissons passed in this Suite: %d/%d\n\n", suite.Passed_Comparissons_num, suite.Total_Comparissons_num)
+	fmt.Print("\n---------------------------------------\n")
 }

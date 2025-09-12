@@ -53,8 +53,8 @@ func Run() {
 	http.HandleFunc("/add/project/header", HandleAddProjectHeader)
 	http.HandleFunc("/add/test/header", HandleAddTestHeader)
 
-	log.Println("Starting server on :6969")
-	if err := http.ListenAndServe(":6969", nil); err != nil {
+	log.Println("Starting frontend on :3773")
+	if err := http.ListenAndServe(":3773", nil); err != nil {
 		log.Fatalf("could not start server: %v\n", err)
 	}
 }

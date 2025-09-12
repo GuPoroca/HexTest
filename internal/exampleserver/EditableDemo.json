@@ -1,0 +1,144 @@
+{
+	"Name": "Demo REST API Project",
+	"Url": "http://localhost:3443",
+	"Suites": [
+		{
+			"Name": "Headers & BodyType Suite",
+			"Tests": [
+				{
+					"Name": "Check Response Headers",
+					"Method": "GET",
+					"Api_endpoint": "/test/headers",
+					"Request_body": "",
+					"Request_Headers": {
+						"X-Custom-Test": "my-header"
+					},
+					"Asserts": [
+						{
+							"Field": "Value of Headers.Content-Type",
+							"Checks": [
+								{
+									"Operand": "==",
+									"Expected": [
+										"application/json"
+									]
+								}
+							]
+						},
+						{
+							"Field": "Value of Headers.X-Custom-Test",
+							"Checks": [
+								{
+									"Operand": "==",
+									"Expected": [
+										"my-header"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"Name": "Check Body Type",
+					"Method": "GET",
+					"Api_endpoint": "/test/bodytype",
+					"Request_body": "",
+					"Request_Headers": {},
+					"Asserts": [
+						{
+							"Field": "Type of Body",
+							"Checks": [
+								{
+									"Operand": "==",
+									"Expected": [
+										"array",
+										"object"
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"Name": "Schema & Regex Suite",
+			"Tests": [
+				{
+					"Name": "Schema Validation",
+					"Method": "GET",
+					"Api_endpoint": "/test/schema",
+					"Request_body": "",
+					"Request_Headers": {},
+					"Asserts": [
+						{
+							"Field": "JSON Schema Validation",
+							"Checks": [
+								{
+									"Operand": "==",
+									"Expected": [
+										"{ \"type\": \"object\", \"properties\": { \"id\": {\"type\": \"number\"}, \"name\": {\"type\": \"string\"}, \"email\": {\"type\": \"string\"} }, \"required\": [\"id\",\"name\",\"email\"] }"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"Name": "Regex Checks",
+					"Method": "GET",
+					"Api_endpoint": "/test/regex",
+					"Request_body": "",
+					"Request_Headers": {},
+					"Asserts": [
+						{
+							"Field": "Value of Body.email",
+							"Checks": [
+								{
+									"Operand": "matchRegex",
+									"Expected": [
+										"^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
+									]
+								}
+							]
+						},
+						{
+							"Field": "Value of Body.uuid",
+							"Checks": [
+								{
+									"Operand": "matchRegex",
+									"Expected": [
+										"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"Name": "Empty Suite",
+			"Tests": [
+				{
+					"Name": "Empty Array/Object",
+					"Method": "GET",
+					"Api_endpoint": "/test/empty",
+					"Request_body": "",
+					"Request_Headers": {},
+					"Asserts": [
+						{
+							"Field": "Response Body",
+							"Checks": [
+								{
+									"Operand": "isEmpty",
+									"Expected": []
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}

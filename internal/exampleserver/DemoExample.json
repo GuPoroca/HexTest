@@ -1,0 +1,258 @@
+    {
+        "Name": "Demo REST API Project",
+        "Url": "http://localhost:3443",
+        "Auth": null,
+        "Parallel": false,
+        "Project_Headers": null,
+        "Suites": [
+            {
+                "Name": "Account Suite",
+                "Tests": [
+                    {
+                        "Name": "Create Account",
+                        "Method": "POST",
+                        "Api_endpoint": "/account/create",
+                        "Request_body": "{\"username\": \"user1\", \"password\": \"1234\", \"data\": \"some-data\"}",
+                        "Request_Headers": {
+                            "Content-Type": "application/json"
+                        },
+                        "Asserts": [
+                            {
+                                "Field": "Response Status",
+                                "Checks": [
+                                    {
+                                        "Operand": "==",
+                                        "Expected": [
+                                            201
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "Field": "Response Body",
+                                "Checks": [
+                                    {
+                                        "Operand": "containsKey",
+                                        "Expected": [
+                                            "message"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Name": "Login Success",
+                        "Method": "POST",
+                        "Api_endpoint": "/account/login",
+                        "Request_body": "{\"username\": \"user1\", \"password\": \"1234\"}",
+                        "Request_Headers": {
+                            "Content-Type": "application/json"
+                        },
+                        "Asserts": [
+                            {
+                                "Field": "Response Status",
+                                "Checks": [
+                                    {
+                                        "Operand": "==",
+                                        "Expected": [
+                                            200
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "Field": "Response Body",
+                                "Checks": [
+                                    {
+                                        "Operand": "containsKey",
+                                        "Expected": [
+                                            "token"
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "Field": "Response Size",
+                                "Checks": [
+                                    {
+                                        "Operand": ">",
+                                        "Expected": [
+                                            10
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Admin Suite",
+                "Tests": [
+                    {
+                        "Name": "Admin Gets All Users",
+                        "Method": "GET",
+                        "Api_endpoint": "/admin/users",
+                        "Request_body": "",
+                        "Request_Headers": {
+                            "Authorization": "token-admin-123456"
+                        },
+                        "Asserts": [
+                            {
+                                "Field": "Response Status",
+                                "Checks": [
+                                    {
+                                        "Operand": "==",
+                                        "Expected": [
+                                            200
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "Field": "Response Body",
+                                "Checks": [
+                                    {
+                                        "Operand": "containsKey -R",
+                                        "Expected": [
+                                            "user1"
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "Field": "Response Size",
+                                "Checks": [
+                                    {
+                                        "Operand": ">=",
+                                        "Expected": [
+                                            50
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "Name": "Testing Suite",
+                "Tests": [
+                    {
+                        "Name": "Slow Endpoint Fails Time Assertion",
+                        "Method": "GET",
+                        "Api_endpoint": "/test/slow",
+                        "Request_body": "",
+                        "Request_Headers": {},
+                        "Asserts": [
+                            {
+                                "Field": "Response Status",
+                                "Checks": [
+                                    {
+                                        "Operand": "==",
+                                        "Expected": [
+                                            200
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "Field": "Response Time",
+                                "Checks": [
+                                    {
+                                        "Operand": "<=",
+                                        "Expected": [
+                                            1000
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Name": "Random Error Test",
+                        "Method": "GET",
+                        "Api_endpoint": "/test/random-error",
+                        "Request_body": "",
+                        "Request_Headers": {},
+                        "Asserts": [
+                            {
+                                "Field": "Response Status",
+                                "Checks": [
+                                    {
+                                        "Operand": "!=",
+                                        "Expected": [
+                                            418
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Name": "Weird Schema",
+                        "Method": "GET",
+                        "Api_endpoint": "/test/weird-schema",
+                        "Request_body": "",
+                        "Request_Headers": {},
+                        "Asserts": [
+                            {
+                                "Field": "Response Body",
+                                "Checks": [
+                                    {
+                                        "Operand": "containsKey -R",
+                                        "Expected": [
+                                            "id"
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "Name": "Large Payload Test",
+                        "Method": "GET",
+                        "Api_endpoint": "/test/large",
+                        "Request_body": "",
+                        "Request_Headers": {},
+                        "Asserts": [
+                            {
+                                "Field": "Response Status",
+                                "Checks": [
+                                    {
+                                        "Operand": "==",
+                                        "Expected": [
+                                            200
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "Field": "Value of Body.count",
+                                "Checks": [
+                                    {
+                                        "Operand": "==",
+                                        "Expected": [
+                                            1000
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "Field": "Response Size",
+                                "Checks": [
+                                    {
+                                        "Operand": ">",
+                                        "Expected": [
+                                            5000
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }

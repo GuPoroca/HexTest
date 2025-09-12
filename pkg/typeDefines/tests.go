@@ -18,11 +18,13 @@ type Test struct {
 	Method       string `json:"Method"`
 	Request_body string `json:"Request_body"`
 	Api_endpoint string `json:"Api_endpoint"`
+	Comment      string `json:"Comment"`
 	//Custom Request_Headers
 	Request_Headers map[string]string `json:"Request_Headers"`
 	//Response related
 	Response_body        map[string]any
 	Response_body_string string
+	Response_Headers     map[string][]string
 	Response_status      string
 	Time_to_respond      int64
 	Response_size        int64
@@ -31,8 +33,6 @@ type Test struct {
 	Passed                  []bool
 	Passed_Comparissons_num int
 	Total_Comparissons_num  int
-	//Extra sugar
-	Comment string `json:"Comment"`
 }
 
 func (test *Test) Execute(url string, auth IAuth) error {
@@ -98,7 +98,8 @@ func (test *Test) Execute(url string, auth IAuth) error {
 	response.Body.Close()
 	test.checkResponseSize(*response)
 
-	test.Response_status = response.Status
+	test.Response_Headers = response.Header
+	test.Response_status = strings.Split(response.Status, " ")[0]
 
 	fmt.Printf("Response Body in json: %s\n", test.Response_body_string)
 	fmt.Printf("Status: %s\n", test.Response_status)
@@ -108,38 +109,20 @@ func (test *Test) Execute(url string, auth IAuth) error {
 	fmt.Print("\nRunning Assertions:\n\n")
 	test.runAllAssertions()
 	fmt.Print("\n---------------------------------------\n")
-	fmt.Printf("Total comparissons passed %d/%d", test.Passed_Comparissons_num, test.Total_Comparissons_num)
+	fmt.Printf("Total comparissons passed %d/%d\n\n", test.Passed_Comparissons_num, test.Total_Comparissons_num)
 
 	return nil
 }
 
 func (test *Test) runAllAssertions() int {
-	var value any
 	for i := range test.Asserts {
-		switch test.Asserts[i].Field {
-		case "Response Body":
-			value = test.Response_body
-		case "Response Status":
-			value = test.Response_status
-		case "Response Time":
-			value = test.Time_to_respond
-		case "Response Size":
-			value = test.Response_size
-		default:
-			//special cases
-			if subFields := strings.Split(test.Asserts[i].Field, "."); subFields[0] == "Value of Body" {
-				if len(subFields) == 1 {
-					value = test.Response_body
-				} else {
-					value, _ = getSpecificVal(subFields[1:], test.Response_body)
-				}
-			} else {
-				fmt.Printf("Assertion field \"%s\" is invalid", test.Asserts[i].Field)
+		value := test.getValueForTest(i)
+		if typeOfValue(value) == "string" {
+			if value == "Invalid Assert" {
 				continue
 			}
 		}
 		fmt.Printf("\tAsserting %s\n\n", test.Asserts[i].Field)
-
 		test.Passed_Comparissons_num += test.Asserts[i].MakeAssertions(value)
 		test.Total_Comparissons_num += test.Asserts[i].Total_Comparissons_num
 		if (test.Asserts[i].Passed_Comparissons_num - len(test.Asserts[i].Checks)) == 0 {
@@ -147,8 +130,56 @@ func (test *Test) runAllAssertions() int {
 		} else {
 			test.Passed = append(test.Passed, false)
 		}
+
 	}
 	return test.Passed_Comparissons_num
+}
+
+func (test *Test) getValueForTest(i int) any {
+	var value any
+	switch test.Asserts[i].Field {
+	case "Response Body":
+		value = test.Response_body
+	case "Response Status":
+		value = test.Response_status
+	case "Response Time":
+		value = test.Time_to_respond
+	case "Response Size":
+		value = test.Response_size
+	case "Response Headers":
+		value = test.Request_Headers
+	case "JSON Schema Validation":
+		value = test.Response_body
+	default:
+		//special cases
+		if subFields := strings.Split(test.Asserts[i].Field, "."); subFields[0] == "Value of Body" {
+			if len(subFields) == 1 {
+				value = test.Response_body
+			} else {
+				value, _ = getSpecificVal(subFields[1:], test.Response_body)
+			}
+		} else if subFields := strings.Split(test.Asserts[i].Field, "."); subFields[0] == "Value of Headers" {
+			if len(subFields) == 1 {
+				value = test.Response_Headers
+			} else {
+				value = test.Response_Headers[subFields[1]][0]
+			}
+		} else if subFields := strings.Split(test.Asserts[i].Field, "."); subFields[0] == "Type of Body" {
+			if len(subFields) == 1 {
+				value = test.Response_body
+				fmt.Printf("Body: %v", value)
+				value = typeOfValue(value)
+				fmt.Printf("Type of Body: %v", value)
+			} else {
+				value, _ = getSpecificVal(subFields[1:], test.Response_body)
+				value = typeOfValue(value)
+			}
+		} else { //end of special cases
+			fmt.Printf("Assertion field \"%s\" is invalid\n", test.Asserts[i].Field)
+			return "Invalid Assert"
+		}
+	}
+	return value
 }
 
 func (test *Test) checkResponseSize(resp http.Response) {
@@ -194,4 +225,27 @@ func getSpecificVal(fa []string, m any) (any, bool) {
 		}
 	}
 	return nil, false
+}
+
+func typeOfValue(v any) string {
+	switch v.(type) {
+	case map[string]any, map[string]string:
+		return "object"
+	case float64:
+		return "number"
+	case string:
+		_, vFloat := toFloat64(v)
+		if vFloat {
+			return "number"
+		}
+		_, vDate := tryParseTime(v.(string))
+		if vDate {
+			return "date"
+		}
+		return "string"
+	case []float64, []string, []map[string]any, []map[string]string:
+		return "array"
+	default:
+		return "ERROR"
+	}
 }

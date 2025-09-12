@@ -14,8 +14,16 @@ type Assert struct {
 func (assert *Assert) MakeAssertions(fieldValue any) int {
 	assert.FieldResponseValue = fieldValue
 	for i := range assert.Checks {
-		assert.Passed_Comparissons_num += assert.Checks[i].MakeAllChecks(fieldValue)
-		assert.Total_Comparissons_num += assert.Checks[i].Total_num
+		if assert.Field == "JSON Schema Validation" {
+			if assert.Checks[i].JsonSchema(assert.FieldResponseValue) {
+				assert.Passed_Comparissons_num = 1
+			}
+			assert.Total_Comparissons_num = 1
+
+		} else {
+			assert.Passed_Comparissons_num += assert.Checks[i].MakeAllChecks(fieldValue)
+			assert.Total_Comparissons_num += assert.Checks[i].Total_num
+		}
 		if (assert.Checks[i].Passed_num - len(assert.Checks[i].Expected)) == 0 {
 			assert.Results = append(assert.Results, true)
 		} else {

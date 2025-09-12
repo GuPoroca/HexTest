@@ -5,12 +5,14 @@ import (
 )
 
 type Project struct {
-	Name            string `json:"Name"`
-	Url             string `json:"Url"`
-	Auth            IAuth
-	Parallel        bool              `json:"Parallel"`
-	Project_Headers map[string]string `json:"Project_Headers"`
-	Suites          []Suite           `json:"Suites"`
+	Name                    string            `json:"Name"`
+	Url                     string            `json:"Url"`
+	Parallel                bool              `json:"Parallel"`
+	Project_Headers         map[string]string `json:"Project_Headers"`
+	Suites                  []Suite           `json:"Suites"`
+	Auth                    IAuth
+	Passed_Comparissons_num int
+	Total_Comparissons_num  int
 }
 
 func (project *Project) ExecuteProject() {
@@ -25,5 +27,12 @@ func (project *Project) ExecuteProject() {
 		} else {
 			project.Suites[i].ExecuteSuite(project.Url, project.Auth)
 		}
+		project.Passed_Comparissons_num += project.Suites[i].Passed_Comparissons_num
+		project.Total_Comparissons_num += project.Suites[i].Total_Comparissons_num
+
 	}
+	fmt.Print("\n---------------------------------------\n")
+	fmt.Printf("Total comparissons passed in the entire Project: %d/%d\n\n", project.Passed_Comparissons_num, project.Total_Comparissons_num)
+	fmt.Print("\n---------------------------------------\n")
+
 }
