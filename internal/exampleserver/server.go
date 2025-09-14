@@ -22,6 +22,8 @@ func RunExample() {
 	http.HandleFunc("/test/regex", regexEndpoint)
 	http.HandleFunc("/test/empty", emptyEndpoint)
 
+	http.HandleFunc("/auth", authHandler)
+
 	log.Println("Example Server running on :3443")
 	log.Fatal(http.ListenAndServe(":3443", nil))
 }

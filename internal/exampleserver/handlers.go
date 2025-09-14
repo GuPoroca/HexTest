@@ -9,6 +9,11 @@ import (
 	"time"
 )
 
+const (
+	clientID     = "client-id-example"
+	clientSecret = "client-secret-example"
+)
+
 type User struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
@@ -34,6 +39,34 @@ func getUsernameFromToken(r *http.Request) (string, bool) {
 	defer mu.Unlock()
 	username, ok := sessions[token]
 	return username, ok
+}
+
+func authHandler(w http.ResponseWriter, r *http.Request) {
+	// Parse form values (clientcredentials.Config sends application/x-www-form-urlencoded)
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, "invalid form", http.StatusBadRequest)
+		return
+	}
+
+	id := r.FormValue("client_id")
+	secret := r.FormValue("client_secret")
+
+	if id != clientID || secret != clientSecret {
+		http.Error(w, "invalid client credentials", http.StatusUnauthorized)
+		return
+	}
+
+	// Generate dummy token
+	accessToken := "demo-token-" + time.Now().Format("150405")
+
+	resp := map[string]interface{}{
+		"access_token": accessToken,
+		"token_type":   "bearer",
+		"expires_in":   3600,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(resp)
 }
 
 // Core Handlers

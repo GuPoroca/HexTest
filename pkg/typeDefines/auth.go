@@ -10,7 +10,7 @@ import (
 )
 
 type IAuth interface {
-	Authenticate() (string, error)
+	Authenticate() string
 }
 
 type oAuth2 struct {
@@ -28,7 +28,7 @@ func NewoAuth2(grant_type string) *oAuth2 {
 	return &oauth2
 }
 
-func (oAuth2 oAuth2) Authenticate() (string, error) {
+func (oAuth2 oAuth2) Authenticate() string {
 	ctx := context.Background()
 	oAuth2.collectDotEnv()
 	auth := clientcredentials.Config{ClientID: oAuth2.CLIENT_ID, ClientSecret: oAuth2.CLIENT_SECRET, TokenURL: oAuth2.Token_URL, Scopes: oAuth2.Scopes}
@@ -36,11 +36,11 @@ func (oAuth2 oAuth2) Authenticate() (string, error) {
 	if err != nil {
 		log.Fatalf("error handling auth, %v", err)
 	}
-	return token_str.AccessToken, err
+	return token_str.AccessToken
 }
 
 func (oAuth2 *oAuth2) collectDotEnv() {
-	err := godotenv.Load("../../.env")
+	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatalf("Error loading .env file: %s", err)
 	}
