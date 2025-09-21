@@ -2,14 +2,14 @@ package tui
 
 import (
 	"fmt"
+	"github.com/GuPoroca/HexTest/pkg/typeDefines"
+	list "github.com/charmbracelet/bubbles/list"
+	"github.com/charmbracelet/bubbles/viewport"
+	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 	"io"
 	"strconv"
 	"strings"
-
-	"github.com/GuPoroca/HexTest/pkg/typeDefines"
-	list "github.com/charmbracelet/bubbles/list"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 )
 
 type itemKind int
@@ -47,6 +47,12 @@ var (
 	styleBulletA = "🔎 "
 	styleBulletC = "✔ "
 )
+
+var detailStyle = lipgloss.NewStyle().
+	Border(lipgloss.RoundedBorder()).
+	Padding(1).
+	Align(lipgloss.Center).        // horizontal center
+	AlignVertical(lipgloss.Center) // vertical center
 
 // ---------- Custom Delegate ----------
 type delegate struct{}
@@ -109,7 +115,8 @@ func stripANSI(s string) string {
 type Model struct {
 	project typeDefines.Project
 	list    list.Model
-	logs    []string
+	results viewport.Model
+	focus   int
 }
 
 func New(project typeDefines.Project, width, height int) Model {
@@ -120,9 +127,14 @@ func New(project typeDefines.Project, width, height int) Model {
 	l.SetShowHelp(true)
 	l.DisableQuitKeybindings()
 
+	vp := viewport.New(width/3, height)
+	vp.SetContent(renderResults(project))
+
 	return Model{
 		project: project,
 		list:    l,
+		results: vp,
+		focus:   0,
 	}
 }
 
@@ -131,25 +143,35 @@ func (m Model) Init() tea.Cmd { return nil }
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		m.list.SetSize(msg.Width, msg.Height)
+		colWidth := msg.Width / 3
+		m.list.SetSize(colWidth, msg.Height)
+		m.results.Width = colWidth
+		m.results.Height = msg.Height
 
 	case TreeUpdateMsg:
 		m.project = msg.Project
 		m.list.SetItems(buildItems(m.project))
+		m.results.SetContent(renderResults(m.project))
 
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "q", "esc", "ctrl+c":
 			return m, tea.Quit
+		case "tab":
+			m.focus = (m.focus + 1) % 2 // toggle focus
 		}
 	}
 	var cmd tea.Cmd
-	m.list, cmd = m.list.Update(msg)
+	if m.focus == 0 {
+		m.list, cmd = m.list.Update(msg)
+	} else {
+		m.results, cmd = m.results.Update(msg)
+	}
 	return m, cmd
 }
 
 func (m Model) View() string {
-	totalWidth := m.list.Width()
+	totalWidth := m.list.Width() * 3
 	colWidth := totalWidth / 3
 
 	colStyle := lipgloss.NewStyle().
@@ -158,8 +180,8 @@ func (m Model) View() string {
 		Width(colWidth)
 
 	treeView := colStyle.Render(m.list.View())
-	detailView := colStyle.Render(m.selectedDetails())
-	resultsView := colStyle.Render(renderResults(m.project)) // 👈 swapped here
+	detailView := detailStyle.Width(colWidth).Height(m.list.Height()).Render(m.selectedDetails())
+	resultsView := colStyle.Render(m.results.View())
 
 	return lipgloss.JoinHorizontal(lipgloss.Top, treeView, detailView, resultsView)
 }
@@ -237,13 +259,6 @@ func (m Model) selectedDetails() string {
 		)
 	}
 	return "Unknown item"
-}
-
-func (m Model) renderLogs() string {
-	if len(m.logs) == 0 {
-		return "No logs yet"
-	}
-	return strings.Join(m.logs, "\n")
 }
 
 func renderResults(p typeDefines.Project) string {
