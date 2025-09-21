@@ -54,6 +54,8 @@ func putValInChan() {
 func (check *Check) MakeCheck(responseVal any, i int) (int, error) {
 	t := &MockT{}
 	expectedVal := check.Expected[i]
+	value := -2
+
 	passed := false
 	defer putValInChan()
 
@@ -126,7 +128,6 @@ func (check *Check) MakeCheck(responseVal any, i int) (int, error) {
 
 checkPassed:
 	{
-		value := 0
 		if passed == true {
 			value = 1
 		} else {

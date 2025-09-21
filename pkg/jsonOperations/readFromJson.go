@@ -18,12 +18,12 @@ func ReadJSON(path string) typeDefines.Project {
 	fmt.Printf("Successfully Opened %s\n", jsonFile.Name())
 
 	byteValue, _ := io.ReadAll(jsonFile)
-	var project typeDefines.Project
+	var p typeDefines.Project
 
-	json.Unmarshal(byteValue, &project)
+	json.Unmarshal(byteValue, &p)
 
 	defer jsonFile.Close()
-	return project
+	return p
 }
 
 func PrettyPrint(any_struct any) {

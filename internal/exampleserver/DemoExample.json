@@ -7,7 +7,7 @@
         "Suites": [
             {
                 "Name": "Account Suite",
-                "Parallel": "true",
+                "Parallel": true,
                 "Tests": [
                     {
                         "Name": "Create Account",
@@ -90,7 +90,7 @@
             },
             {
                 "Name": "Admin Suite",
-                "Parallel": "true",
+                "Parallel": true,
                 "Tests": [
                     {
                         "Name": "Admin Gets All Users",
@@ -140,7 +140,7 @@
             },
             {
                 "Name": "Testing Suite",
-                "Parallel": "true",
+                "Parallel": true,
                 "Tests": [
                     {
                         "Name": "Slow Endpoint Fails Time Assertion",

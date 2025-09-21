@@ -14,7 +14,7 @@ type Project struct {
 	Auth            IAuth
 }
 
-func doWork(id int, wg *sync.WaitGroup, project Project) {
+func doWork(id int, wg *sync.WaitGroup, project *Project) {
 	defer wg.Done() // Decrement counter when goroutine finishes
 	project.Suites[id].ExecuteSuite(project.Url)
 }
@@ -26,7 +26,7 @@ func (project *Project) ExecuteProject() {
 	for i := range project.Suites {
 		if project.Parallel {
 			wg.Add(1)
-			go doWork(i, &wg, *project)
+			go doWork(i, &wg, project)
 		} else {
 			project.Suites[i].ExecuteSuite(project.Url)
 		}

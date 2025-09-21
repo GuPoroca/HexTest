@@ -205,6 +205,7 @@ func buildItems(p typeDefines.Project) []list.Item {
 						operand:     c.Operand,
 						expected:    c.Expected,
 						checkStatus: c.Passed, // assume []int
+						desc:        typeDefines.StringifyMyAny(a.FieldResponseValue),
 					})
 				}
 			}
@@ -217,8 +218,6 @@ func statusesToIcons(ss []int) string {
 	var b strings.Builder
 	for _, s := range ss {
 		switch s {
-		case -2:
-			b.WriteString("⏳")
 		case -1:
 			b.WriteString("💥")
 		case 0:
@@ -252,7 +251,8 @@ func (m Model) selectedDetails() string {
 			expected = strings.Join(stringsIt, ", ")
 		}
 		return fmt.Sprintf(
-			"\n\n\nOperand: %s\nExpected: %s\nStatuses: %s",
+			"\n\n\nResponse Value: %s\nOperand: %s\nExpected: %s\nStatuses: %s",
+			it.desc,
 			it.operand,
 			expected,
 			statusesToIcons(it.checkStatus),
