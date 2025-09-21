@@ -2,6 +2,8 @@ package tui
 
 import "github.com/GuPoroca/HexTest/pkg/typeDefines"
 
+type fileChosenMsg string
+
 // Send this to the program when your runner has a new snapshot of the tree.
 type TreeUpdateMsg struct {
 	Project typeDefines.Project
@@ -15,4 +17,3 @@ type CheckUpdateMsg struct {
 	CheckName  string
 	NewStatus  int
 }
-

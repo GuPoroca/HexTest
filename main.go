@@ -2,15 +2,13 @@ package main
 
 import (
 	"fmt"
-	"os"
-
-	"github.com/GuPoroca/HexTest/bus"
 	"github.com/GuPoroca/HexTest/internal/exampleserver"
 	"github.com/GuPoroca/HexTest/pkg/jsonOperations"
 	"github.com/GuPoroca/HexTest/pkg/typeDefines"
 	"github.com/GuPoroca/HexTest/server"
 	"github.com/GuPoroca/HexTest/tui"
 	tea "github.com/charmbracelet/bubbletea"
+	"os"
 )
 
 func main() {
@@ -33,21 +31,16 @@ func main() {
 	case "front":
 		//frontend
 		server.Run()
-	case "bubble":
-		path := os.Args[2]
-		projeto := jsonOperations.ReadJSON(path)
-		p := tea.NewProgram(tui.New(projeto, 0, 0), tea.WithAltScreen())
-		go func() {
-			go projeto.ExecuteProject()
-			for range bus.CheckEvents {
-				// mutate project state somewhere before sending
-				p.Send(tui.TreeUpdateMsg{Project: projeto})
 
-			}
-		}()
+	case "bubble":
+		cwd, _ := os.Getwd()
+		picker := tui.NewEmojiPicker(cwd, ".json", 0, 0)
+
+		root := tui.RootModel{Current: picker}
+
+		p := tea.NewProgram(root, tea.WithAltScreen())
 		if _, err := p.Run(); err != nil {
 			os.Exit(1)
 		}
 	}
-
 }

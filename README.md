@@ -55,7 +55,7 @@ Always learning, always building 🚀
 
 - ✅ Create each data structure for tests, suites and projects [DONE]  
 
-- ⏳ Create auth handler [TODO]  
+- 🚧 Create auth handler [WIP]  
 
 - ⏳ Create simple tests for the already written code [TODO]  
 
@@ -63,9 +63,9 @@ Always learning, always building 🚀
 
 - ✅ Create JSON parser to project data [DONE]  
 
-- ⏳ Create CLI tool to run some tests [TODO]  
+- ✅ Create CLI tool to run some tests [DONE]  
 
-- 🚧 Create visual interface with HTMX + Templ [WIP]  
+- ✅ Create visual interface with HTMX + Templ [DONE]  
 
 - ⏳ Upgrade documentation (make section 4 and 5) [TODO]  
 

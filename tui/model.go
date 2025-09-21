@@ -2,14 +2,16 @@ package tui
 
 import (
 	"fmt"
+	"io"
+	"strconv"
+	"strings"
+
+	"github.com/GuPoroca/HexTest/bus"
 	"github.com/GuPoroca/HexTest/pkg/typeDefines"
 	list "github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"io"
-	"strconv"
-	"strings"
 )
 
 type itemKind int
@@ -27,7 +29,7 @@ type treeItem struct {
 	desc        string
 	operand     string
 	expected    []any
-	checkStatus []int // assuming you store status codes as ints: -2, -1, 0, 1
+	checkStatus []int // assuming you store status codes as ints: -1, 0, 1
 }
 
 func (it treeItem) Title() string       { return it.title }
@@ -103,6 +105,14 @@ func (d delegate) Render(w io.Writer, m list.Model, index int, listItem list.Ite
 	fmt.Fprint(w, line)
 }
 
+// SendUpdate lets external goroutines feed a snapshot
+func (m *Model) SendUpdate(project typeDefines.Project) tea.Cmd {
+
+	return func() tea.Msg {
+		return TreeUpdateMsg{Project: project}
+	}
+}
+
 func dim(s string) string {
 	return lipgloss.NewStyle().Foreground(lipgloss.Color("#6b7280")).Render(s)
 }
@@ -113,14 +123,15 @@ func stripANSI(s string) string {
 
 // ---------- Model ----------
 type Model struct {
-	project typeDefines.Project
-	list    list.Model
-	results viewport.Model
-	focus   int
+	project    typeDefines.Project
+	projectPtr *typeDefines.Project
+	list       list.Model
+	results    viewport.Model
+	focus      int
 }
 
-func New(project typeDefines.Project, width, height int) Model {
-	items := buildItems(project)
+func New(project *typeDefines.Project, width, height int) Model {
+	items := buildItems(*project)
 
 	l := list.New(items, delegate{}, width, height)
 	l.Title = styleTitle.Render(project.Name)
@@ -128,17 +139,29 @@ func New(project typeDefines.Project, width, height int) Model {
 	l.DisableQuitKeybindings()
 
 	vp := viewport.New(width/3, height)
-	vp.SetContent(renderResults(project))
+	vp.SetContent(renderResults(*project))
 
 	return Model{
-		project: project,
-		list:    l,
-		results: vp,
-		focus:   0,
+		project:    *project,
+		projectPtr: project,
+		list:       l,
+		results:    vp,
+		focus:      0,
 	}
 }
 
-func (m Model) Init() tea.Cmd { return nil }
+// listen once; when a byte arrives, emit a TreeUpdateMsg.
+// We'll resubscribe after we handle the msg.
+func listenForCheck(project *typeDefines.Project) tea.Cmd {
+	return func() tea.Msg {
+		<-bus.CheckEvents // block until a check event arrives
+		return TreeUpdateMsg{Project: *project}
+	}
+}
+
+func (m Model) Init() tea.Cmd {
+	return listenForCheck(m.projectPtr)
+}
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
@@ -152,6 +175,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.project = msg.Project
 		m.list.SetItems(buildItems(m.project))
 		m.results.SetContent(renderResults(m.project))
+		return m, listenForCheck(m.projectPtr)
 
 	case tea.KeyMsg:
 		switch msg.String() {

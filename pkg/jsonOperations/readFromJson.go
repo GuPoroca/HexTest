@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-func ReadJSON(path string) typeDefines.Project {
+func ReadJSON(path string) *typeDefines.Project {
 
 	jsonFile, err := os.Open(path)
 
@@ -23,7 +23,7 @@ func ReadJSON(path string) typeDefines.Project {
 	json.Unmarshal(byteValue, &p)
 
 	defer jsonFile.Close()
-	return p
+	return &p
 }
 
 func PrettyPrint(any_struct any) {
