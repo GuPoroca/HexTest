@@ -4,17 +4,16 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/GuPoroca/HexTest/bus"
 	"github.com/GuPoroca/HexTest/internal/exampleserver"
 	"github.com/GuPoroca/HexTest/pkg/jsonOperations"
 	"github.com/GuPoroca/HexTest/pkg/typeDefines"
 	"github.com/GuPoroca/HexTest/server"
+	"github.com/GuPoroca/HexTest/tui"
+	tea "github.com/charmbracelet/bubbletea"
 )
 
-// go run . server
-// or
-// fo run . client
 func main() {
-
 	switch os.Args[1] {
 	case "auth":
 		auth := typeDefines.NewoAuth2("grant_type")
@@ -34,6 +33,21 @@ func main() {
 	case "front":
 		//frontend
 		server.Run()
+	case "bubble":
+		path := os.Args[2]
+		projeto := jsonOperations.ReadJSON(path)
+		p := tea.NewProgram(tui.New(projeto, 0, 0), tea.WithAltScreen())
+		go func() {
+			go projeto.ExecuteProject()
+			for range bus.CheckEvents {
+				// mutate project state somewhere before sending
+				p.Send(tui.TreeUpdateMsg{Project: projeto})
+
+			}
+		}()
+		if _, err := p.Run(); err != nil {
+			os.Exit(1)
+		}
 	}
 
 }

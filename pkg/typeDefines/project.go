@@ -13,12 +13,10 @@ type Project struct {
 	Suites          []Suite           `json:"Suites"`
 	Auth            IAuth
 }
-type CheckCallback func(suiteName, testName, assertField string, checkIndex int, passed int)
 
 func doWork(id int, wg *sync.WaitGroup, project Project) {
-	var cb CheckCallback
 	defer wg.Done() // Decrement counter when goroutine finishes
-	project.Suites[id].ExecuteSuite(project.Url, cb)
+	project.Suites[id].ExecuteSuite(project.Url)
 }
 
 func (project *Project) ExecuteProject() {
@@ -76,4 +74,3 @@ func (p Project) PrintResults() {
 	fmt.Printf("Number of Checks Broken: %v\n", ch_bk)
 
 }
-
