@@ -27,6 +27,7 @@ func main() {
 			path := os.Args[2]
 			projeto := jsonOperations.ReadJSON(path)
 			projeto.ExecuteProject()
+			projeto.PrintResults()
 		}
 	case "example_server":
 		exampleserver.RunExample()
@@ -34,4 +35,5 @@ func main() {
 		//frontend
 		server.Run()
 	}
+
 }

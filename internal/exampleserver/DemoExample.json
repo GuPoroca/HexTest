@@ -2,11 +2,12 @@
         "Name": "Demo REST API Project",
         "Url": "http://localhost:3443",
         "Auth": null,
-        "Parallel": false,
+        "Parallel": true,
         "Project_Headers": null,
         "Suites": [
             {
                 "Name": "Account Suite",
+                "Parallel": "true",
                 "Tests": [
                     {
                         "Name": "Create Account",
@@ -89,6 +90,7 @@
             },
             {
                 "Name": "Admin Suite",
+                "Parallel": "true",
                 "Tests": [
                     {
                         "Name": "Admin Gets All Users",
@@ -138,6 +140,7 @@
             },
             {
                 "Name": "Testing Suite",
+                "Parallel": "true",
                 "Tests": [
                     {
                         "Name": "Slow Endpoint Fails Time Assertion",

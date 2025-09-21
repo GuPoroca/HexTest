@@ -3,7 +3,6 @@ package typeDefines
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -29,17 +28,12 @@ type Test struct {
 	Time_to_respond      int64
 	Response_size        int64
 	//Assertion related
-	Asserts                 []Assert `json:"Asserts"`
-	Passed                  []bool
-	Passed_Comparissons_num int
-	Total_Comparissons_num  int
+	Asserts []Assert `json:"Asserts"`
 }
 
-func (test *Test) Execute(url string, auth IAuth) error {
+func (test *Test) Execute(url string) error {
 	var err error
 	full_url := url + test.Api_endpoint
-
-	fmt.Printf("\nExecuting Test: %s\n", test.Name)
 
 	request, err := http.NewRequest(test.Method, full_url, strings.NewReader(test.Request_body))
 	if err != nil {
@@ -101,20 +95,12 @@ func (test *Test) Execute(url string, auth IAuth) error {
 	test.Response_Headers = response.Header
 	test.Response_status = strings.Split(response.Status, " ")[0]
 
-	fmt.Printf("Response Body in json: %s\n", test.Response_body_string)
-	fmt.Printf("Status: %s\n", test.Response_status)
-	fmt.Printf("Size: %v Bytes\n", test.Response_size)
-	fmt.Printf("Time to execute: %vms\n", test.Time_to_respond)
-
-	fmt.Print("\nRunning Assertions:\n\n")
 	test.runAllAssertions()
-	fmt.Print("\n---------------------------------------\n")
-	fmt.Printf("Total comparissons passed %d/%d\n\n", test.Passed_Comparissons_num, test.Total_Comparissons_num)
 
 	return nil
 }
 
-func (test *Test) runAllAssertions() int {
+func (test *Test) runAllAssertions() {
 	for i := range test.Asserts {
 		value := test.getValueForTest(i)
 		if typeOfValue(value) == "string" {
@@ -122,17 +108,8 @@ func (test *Test) runAllAssertions() int {
 				continue
 			}
 		}
-		fmt.Printf("\tAsserting %s\n\n", test.Asserts[i].Field)
-		test.Passed_Comparissons_num += test.Asserts[i].MakeAssertions(value)
-		test.Total_Comparissons_num += test.Asserts[i].Total_Comparissons_num
-		if (test.Asserts[i].Passed_Comparissons_num - len(test.Asserts[i].Checks)) == 0 {
-			test.Passed = append(test.Passed, true)
-		} else {
-			test.Passed = append(test.Passed, false)
-		}
-
+		test.Asserts[i].MakeAssertions(value)
 	}
-	return test.Passed_Comparissons_num
 }
 
 func (test *Test) getValueForTest(i int) any {
@@ -167,15 +144,12 @@ func (test *Test) getValueForTest(i int) any {
 		} else if subFields := strings.Split(test.Asserts[i].Field, "."); subFields[0] == "Type of Body" {
 			if len(subFields) == 1 {
 				value = test.Response_body
-				fmt.Printf("Body: %v", value)
 				value = typeOfValue(value)
-				fmt.Printf("Type of Body: %v", value)
 			} else {
 				value, _ = getSpecificVal(subFields[1:], test.Response_body)
 				value = typeOfValue(value)
 			}
 		} else { //end of special cases
-			fmt.Printf("Assertion field \"%s\" is invalid\n", test.Asserts[i].Field)
 			return "Invalid Assert"
 		}
 	}
@@ -185,7 +159,7 @@ func (test *Test) getValueForTest(i int) any {
 func (test *Test) checkResponseSize(resp http.Response) {
 	dump, err := httputil.DumpResponse(&resp, true)
 	if err != nil {
-		fmt.Printf("Error dumping response: %v", err)
+		log.Printf("Error dumping response: %v", err)
 	} else {
 		test.Response_size = int64(len(dump))
 	}

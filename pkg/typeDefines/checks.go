@@ -15,7 +15,7 @@ import (
 type Check struct {
 	Operand    string `json:"Operand"`
 	Expected   []any  `json:"Expected"`
-	Passed     []bool
+	Passed     []int
 	Passed_num int
 	Total_num  int
 }
@@ -33,34 +33,27 @@ func (check *Check) MakeAllChecks(responseVal any) int {
 	check.Total_num = len(check.Expected)
 	if check.Total_num == 0 {
 		check.Total_num = 1
-		if check.MakeCheckWithoutExpected(responseVal) {
+		if p, _ := check.MakeCheckWithoutExpected(responseVal); p > 0 {
 			check.Passed_num++
 		}
 	}
 	for i := range check.Expected {
-		if check.MakeCheck(responseVal, i) {
+		if p, _ := check.MakeCheck(responseVal, i); p > 0 {
 			check.Passed_num++
 		}
 	}
 	return check.Passed_num
 }
 
-func (check *Check) MakeCheck(responseVal any, i int) bool {
+func (check *Check) MakeCheck(responseVal any, i int) (int, error) {
 	t := &MockT{}
 	expectedVal := check.Expected[i]
 	passed := false
 
-	check.printCheckStart(responseVal, i)
-
 	switch check.Operand {
-	case "==":
-		passed = assert.True(t, reflect.DeepEqual(responseVal, expectedVal))
-	case "!=":
-		passed = assert.False(t, reflect.DeepEqual(responseVal, expectedVal))
-	case ">=", "<=", ">", "<":
-		//Comparisons of ><
-		//try numbers first
 
+	case "==", "!=", ">=", "<=", ">", "<":
+		//try numbers first
 		resFloat, resOk := toFloat64(responseVal)
 		expFloat, expOk := toFloat64(expectedVal)
 		if expFloat == math.Trunc(expFloat) && resFloat == math.Trunc(resFloat) {
@@ -68,6 +61,10 @@ func (check *Check) MakeCheck(responseVal any, i int) bool {
 
 		if resOk && expOk {
 			switch check.Operand {
+			case "==":
+				passed = assert.Equal(t, resFloat, expFloat)
+			case "!=":
+				passed = assert.NotEqual(t, resFloat, expFloat)
 			case ">=":
 				passed = assert.GreaterOrEqual(t, resFloat, expFloat)
 			case "<=":
@@ -89,6 +86,10 @@ func (check *Check) MakeCheck(responseVal any, i int) bool {
 			if resOk && expOk {
 				// We have two valid dates, so compare them
 				switch check.Operand {
+				case "==":
+					passed = assert.True(t, resTime.Equal(expTime))
+				case "!=":
+					passed = assert.False(t, resTime.Equal(expTime))
 				case ">=":
 					passed = assert.True(t, resTime.Equal(expTime) || resTime.After(expTime))
 				case "<=":
@@ -112,23 +113,28 @@ func (check *Check) MakeCheck(responseVal any, i int) bool {
 	case "containsKey -R":
 		_, passed = ContainsKeyRecursevely(responseVal, expectedVal.(string))
 	default:
-		fmt.Printf("Operand \"%s\" is not recognized", check.Operand)
+		err := OperandNotFound{check.Operand}
+		return -1, err
 	}
 
 checkPassed:
 	{
-		check.Passed = append(check.Passed, passed)
-		printCheckEnd(passed)
-		return passed
+		value := 0
+		if passed == true {
+			value = 1
+		} else {
+			value = 0
+		}
+
+		check.Passed = append(check.Passed, value)
+		return value, nil
 	}
 
 }
 
-func (check *Check) MakeCheckWithoutExpected(responseVal any) bool {
+func (check *Check) MakeCheckWithoutExpected(responseVal any) (int, error) {
 	t := &MockT{}
 	passed := false
-
-	check.printCheckStart(responseVal, -1)
 
 	switch check.Operand {
 	case "isNull":
@@ -140,58 +146,39 @@ func (check *Check) MakeCheckWithoutExpected(responseVal any) bool {
 	case "notEmpty":
 		passed = assert.NotEmpty(t, responseVal)
 	default:
-		fmt.Printf("Operand \"%s\" is not recognized", check.Operand)
+		err := OperandNotFound{check.Operand}
+		return -1, err
 	}
-	check.Passed = append(check.Passed, passed)
-	printCheckEnd(passed)
-	return passed
-
-}
-
-func (check Check) printCheckStart(responseVal any, i int) {
-	var expectedVal any
-	if i != -1 {
-		expectedVal = check.Expected[i]
+	value := 0
+	if passed == true {
+		value = 1
 	} else {
-		expectedVal = ""
+		value = 0
 	}
-	//checks if they can be floats, if so checks if they can be ints
-	resFloat, resOk := toFloat64(responseVal)
-	expFloat, expOk := toFloat64(expectedVal)
+	check.Passed = append(check.Passed, value)
+	return value, nil
 
-	if resOk && expOk {
-		if expFloat == math.Trunc(expFloat) && resFloat == math.Trunc(resFloat) {
-			expectedVal = int(expFloat)
-			responseVal = int(resFloat)
-		}
-	}
-
-	fmt.Printf("\t%s %s %s\n", StringifyMyAny(responseVal), check.Operand, StringifyMyAny(expectedVal))
 }
 
-func printCheckEnd(passed bool) {
-	if passed {
-		fmt.Printf("PASSED\n")
-	} else {
-		fmt.Printf("FAILED\n")
-	}
-}
-
-func (check *Check) JsonSchema(responseVal any) bool {
-	check.printCheckStart(responseVal, 0)
+func (check *Check) JsonSchema(responseVal any) int {
 	schemaStr := check.Expected[0].(string)
 	passed := false
 	ok, _ := validateAgainstSchema(schemaStr, responseVal)
-	if !ok {
+	if ok < 1 {
 		passed = false
 	} else {
 		passed = true
 	}
-	printCheckEnd(passed)
-	return passed
+	value := 0
+	if passed == true {
+		value = 1
+	} else {
+		value = 0
+	}
+	return value
 }
 
-func validateAgainstSchema(schemaStr string, body any) (bool, []string) {
+func validateAgainstSchema(schemaStr string, body any) (int, []string) {
 	schemaLoader := gojsonschema.NewStringLoader(schemaStr)
 
 	// encode body back to JSON string
@@ -200,18 +187,18 @@ func validateAgainstSchema(schemaStr string, body any) (bool, []string) {
 
 	result, err := gojsonschema.Validate(schemaLoader, docLoader)
 	if err != nil {
-		return false, []string{err.Error()}
+		return 0, []string{err.Error()}
 	}
 
 	if result.Valid() {
-		return true, nil
+		return 1, nil
 	}
 
 	errs := []string{}
 	for _, desc := range result.Errors() {
 		errs = append(errs, desc.String())
 	}
-	return false, errs
+	return -1, errs
 }
 
 func tryParseTime(s string) (time.Time, bool) {

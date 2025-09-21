@@ -82,5 +82,13 @@ Always learning, always building 🚀
 
 ## 🚀 How to Use [TODO]
 
+All the Assertion Fields:
+
+Response Body, Response Status, Response Time, Response Size, Response Headers, JSON Schema Validation, Value of Body..., Value of Headers..., Type of Body.
+
+All the Check Operands:
+
+==, !=, >=, <=, >, <, matchRegex, notMatchRegex, containsSubstring, containsKey, containsKey -R, isNull, notNull, isEmpty, notEmpty.
+	
 
 ---

@@ -3,32 +3,18 @@ package typeDefines
 import ()
 
 type Assert struct {
-	Field                   string  `json:"Field"`
-	Checks                  []Check `json:"Checks"`
-	Results                 []bool
-	FieldResponseValue      any
-	Passed_Comparissons_num int
-	Total_Comparissons_num  int
+	Field              string  `json:"Field"`
+	Checks             []Check `json:"Checks"`
+	FieldResponseValue any
 }
 
-func (assert *Assert) MakeAssertions(fieldValue any) int {
+func (assert *Assert) MakeAssertions(fieldValue any) {
 	assert.FieldResponseValue = fieldValue
 	for i := range assert.Checks {
 		if assert.Field == "JSON Schema Validation" {
-			if assert.Checks[i].JsonSchema(assert.FieldResponseValue) {
-				assert.Passed_Comparissons_num = 1
-			}
-			assert.Total_Comparissons_num = 1
-
+			assert.Checks[i].JsonSchema(assert.FieldResponseValue)
 		} else {
-			assert.Passed_Comparissons_num += assert.Checks[i].MakeAllChecks(fieldValue)
-			assert.Total_Comparissons_num += assert.Checks[i].Total_num
-		}
-		if (assert.Checks[i].Passed_num - len(assert.Checks[i].Expected)) == 0 {
-			assert.Results = append(assert.Results, true)
-		} else {
-			assert.Results = append(assert.Results, false)
+			assert.Checks[i].MakeAllChecks(fieldValue)
 		}
 	}
-	return assert.Passed_Comparissons_num
 }
