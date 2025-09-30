@@ -16,7 +16,7 @@ type Project struct {
 
 func doWork(id int, wg *sync.WaitGroup, project *Project) {
 	defer wg.Done() // Decrement counter when goroutine finishes
-	project.Suites[id].ExecuteSuite(project.Url)
+	project.Suites[id].ExecuteSuite(project.Url, project.Project_Headers)
 }
 
 func (project *Project) ExecuteProject() {
@@ -28,7 +28,7 @@ func (project *Project) ExecuteProject() {
 			wg.Add(1)
 			go doWork(i, &wg, project)
 		} else {
-			project.Suites[i].ExecuteSuite(project.Url)
+			project.Suites[i].ExecuteSuite(project.Url, project.Project_Headers)
 		}
 	}
 

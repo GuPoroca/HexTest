@@ -21,11 +21,11 @@ func (suite *Suite) ExecuteSuite(url string, headermap map[string]string) {
 			go func(idx int) {
 
 				defer wg.Done()
-				suite.Tests[idx].Execute(url)
+				suite.Tests[idx].Execute(url, headermap)
 			}(i)
 
 		} else {
-			suite.Tests[i].Execute(url)
+			suite.Tests[i].Execute(url, headermap)
 		}
 	}
 	if suite.Parallel {
