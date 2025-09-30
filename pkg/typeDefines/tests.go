@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io"
 	"log"
+	"maps"
 	"net/http"
 	"net/http/httputil"
 	"strings"
@@ -31,7 +32,7 @@ type Test struct {
 	Asserts []Assert `json:"Asserts"`
 }
 
-func (test *Test) Execute(url string) error {
+func (test *Test) Execute(url string, headermap map[string]string) error {
 	var err error
 	full_url := url + test.Api_endpoint
 
@@ -40,18 +41,8 @@ func (test *Test) Execute(url string) error {
 		log.Printf("An error ocurred while creating the request %v\n", err)
 		return err
 	}
-	//check how to better do authentication rn
 
-	// if auth != nil {
-	// 	token, err := auth.Authenticate()
-	// 	if err != nil {
-	// 		log.Fatalf("An error ocurred during the token request %v\n", err)
-	// 	}
-	// 	request.Header.Add("Authorization", token)
-	// 	fmt.Printf("\nAutenticado com sucesso!\n\n")
-	// }
-
-	test.AddAllHeaders(*request)
+	test.AddAllHeaders(*request, headermap)
 
 	start_time := time.Now()
 
@@ -165,61 +156,9 @@ func (test *Test) checkResponseSize(resp http.Response) {
 	}
 }
 
-func (test Test) AddAllHeaders(req http.Request) {
-	for k := range test.Request_Headers {
-		req.Header.Add(k, test.Request_Headers[k])
-	}
-}
-
-func getSpecificVal(fa []string, m any) (any, bool) {
-	if len(fa) == 0 {
-		return nil, false
-	}
-	switch val := m.(type) {
-	case map[string]any:
-
-		if len(fa) == 1 {
-			return val[fa[0]], true
-		} else {
-			if val, ok := val[fa[0]]; ok {
-				return getSpecificVal(fa[1:], val)
-			} else {
-				return nil, false
-			}
-		}
-	case []any:
-		for i := range val {
-			if val[i].(map[string]any)[fa[0]] != nil {
-				if len(fa) == 1 {
-					return (val[i].(map[string]any)[fa[0]]), true
-				} else {
-					return getSpecificVal(fa[1:], val[i])
-				}
-			}
-		}
-	}
-	return nil, false
-}
-
-func typeOfValue(v any) string {
-	switch v.(type) {
-	case map[string]any, map[string]string:
-		return "object"
-	case float64:
-		return "number"
-	case string:
-		_, vFloat := toFloat64(v)
-		if vFloat {
-			return "number"
-		}
-		_, vDate := tryParseTime(v.(string))
-		if vDate {
-			return "date"
-		}
-		return "string"
-	case []float64, []string, []map[string]any, []map[string]string:
-		return "array"
-	default:
-		return "ERROR"
+func (test Test) AddAllHeaders(req http.Request, hmps map[string]string) {
+	maps.Copy(hmps, test.Request_Headers)
+	for k := range hmps {
+		req.Header.Add(k, hmps[k])
 	}
 }

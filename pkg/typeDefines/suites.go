@@ -11,7 +11,7 @@ type Suite struct {
 	Parallel bool   `json:"Parallel"`
 }
 
-func (suite *Suite) ExecuteSuite(url string) {
+func (suite *Suite) ExecuteSuite(url string, headermap map[string]string) {
 
 	var wg sync.WaitGroup
 
