@@ -1,0 +1,33 @@
+{
+  "Name": "Sample Project",
+  "Url": "http://localhost:3443",
+  "Parallel": false,
+  "Suites": [
+    {
+      "Name": "Smoke Suite",
+      "Parallel": false,
+      "Tests": [
+        {
+          "Name": "Schema endpoint returns the expected keys",
+          "Method": "GET",
+          "Request_body": "",
+          "Api_endpoint": "/test/schema",
+          "Asserts": [
+            {
+              "Field": "Response Status",
+              "Checks": [
+                { "Operand": "==", "Expected": [200] }
+              ]
+            },
+            {
+              "Field": "Response Body",
+              "Checks": [
+                { "Operand": "containsKey", "Expected": ["id", "name", "email"] }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
