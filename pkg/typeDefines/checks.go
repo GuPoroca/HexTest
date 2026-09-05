@@ -9,7 +9,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/GuPoroca/HexTest/bus"
 	"github.com/stretchr/testify/assert"
 	"github.com/xeipuuv/gojsonschema"
 )
@@ -47,17 +46,12 @@ func (check *Check) MakeAllChecks(responseVal any) int {
 	return check.Passed_num
 }
 
-func putValInChan() {
-	bus.CheckEvents <- 1
-}
-
 func (check *Check) MakeCheck(responseVal any, i int) (int, error) {
 	t := &MockT{}
 	expectedVal := check.Expected[i]
 	value := -2
 
 	passed := false
-	defer putValInChan()
 
 	switch check.Operand {
 
@@ -141,7 +135,6 @@ checkPassed:
 }
 
 func (check *Check) MakeCheckWithoutExpected(responseVal any) (int, error) {
-	defer putValInChan()
 	t := &MockT{}
 	passed := false
 
@@ -170,7 +163,6 @@ func (check *Check) MakeCheckWithoutExpected(responseVal any) (int, error) {
 }
 
 func (check *Check) JsonSchema(responseVal any) int {
-	defer putValInChan()
 	schemaStr := check.Expected[0].(string)
 	passed := false
 	ok, _ := validateAgainstSchema(schemaStr, responseVal)

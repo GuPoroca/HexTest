@@ -5,25 +5,44 @@ import (
 	"net/http"
 )
 
-func RunExample() {
-	http.HandleFunc("/account/create", createAccount)
-	http.HandleFunc("/account/login", login)
-	http.HandleFunc("/account/data", getData)
-	http.HandleFunc("/admin/users", getAllUsers)
+// DefaultAddr is the address the demo server listens on when started through
+// RunExample.
+const DefaultAddr = ":3443"
 
-	http.HandleFunc("/test/slow", slowEndpoint)
-	http.HandleFunc("/test/random-error", randomErrorEndpoint)
-	http.HandleFunc("/test/weird-schema", weirdSchemaEndpoint)
-	http.HandleFunc("/test/headers", headerEchoEndpoint)
-	http.HandleFunc("/test/large", largePayloadEndpoint)
+// Handler builds the demo REST API used to exercise HexTest against a real,
+// predictable server. It is exposed (instead of registering on
+// http.DefaultServeMux) so it can be reused by the standalone
+// cmd/exampleserver binary and driven directly from tests with httptest.
+func Handler() http.Handler {
+	mux := http.NewServeMux()
 
-	http.HandleFunc("/test/bodytype", bodyTypeEndpoint)
-	http.HandleFunc("/test/schema", schemaEndpoint)
-	http.HandleFunc("/test/regex", regexEndpoint)
-	http.HandleFunc("/test/empty", emptyEndpoint)
+	// Core account/auth flow
+	mux.HandleFunc("/account/create", createAccount)
+	mux.HandleFunc("/account/login", login)
+	mux.HandleFunc("/account/data", getData)
+	mux.HandleFunc("/admin/users", getAllUsers)
 
-	http.HandleFunc("/auth", authHandler)
+	// Endpoints that stress specific assertion features
+	mux.HandleFunc("/test/slow", slowEndpoint)
+	mux.HandleFunc("/test/random-error", randomErrorEndpoint)
+	mux.HandleFunc("/test/weird-schema", weirdSchemaEndpoint)
+	mux.HandleFunc("/test/headers", headerEchoEndpoint)
+	mux.HandleFunc("/test/large", largePayloadEndpoint)
 
-	log.Println("Example Server running on :3443")
-	log.Fatal(http.ListenAndServe(":3443", nil))
+	mux.HandleFunc("/test/bodytype", bodyTypeEndpoint)
+	mux.HandleFunc("/test/schema", schemaEndpoint)
+	mux.HandleFunc("/test/regex", regexEndpoint)
+	mux.HandleFunc("/test/empty", emptyEndpoint)
+
+	// OAuth2 client-credentials token endpoint
+	mux.HandleFunc("/auth", authHandler)
+
+	return mux
+}
+
+// RunExample starts the demo server and blocks until it stops. It returns any
+// error from the underlying HTTP server so callers can decide how to handle it.
+func RunExample() error {
+	log.Printf("Example Server running on %s", DefaultAddr)
+	return http.ListenAndServe(DefaultAddr, Handler())
 }

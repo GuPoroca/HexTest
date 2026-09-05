@@ -1,2 +1,9 @@
 todo.txt
 .env
+
+# Build output
+/bin/
+/tmp/
+
+# Local logs
+*.log
